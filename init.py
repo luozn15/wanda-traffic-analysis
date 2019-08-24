@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import xlsxProc
-import dwgProc
+import csvProc
 import gui
 import time
 
 class DataframeInitializer():
     name_xlsx = './'
-    name_dwg = './'
+    name_csv = './'
         
     traffic_day = []
     traffic_hour = []
@@ -19,21 +19,21 @@ class DataframeInitializer():
     def getInput(self):
         print('GUI start')
         filechooser = gui.FileChooser()
-        self.name_xlsx = filechooser.name_xlsx
-        self.name_dwg = filechooser.name_dwg
+        self.name_xlsx = filechooser.name_file[0]
+        self.name_csv = filechooser.name_file[1]
         print('GUI stop')
     
     def process(self):
         time.sleep(2)
         print('proc start')
-        print(self.name_xlsx,self.name_dwg)
+        print(self.name_xlsx,self.name_csv)
 
         xlsx_processor = xlsxProc.xlsxProcessor(self.name_xlsx)
         self.traffic_day = xlsx_processor.traffic_day
         self.traffic_hour = xlsx_processor.traffic_hour
         self.dict_store_name_id = xlsx_processor.dict_store_name_id
 
-        dwg_processor = dwgProc.dwgProcessor(self.name_dwg)
+        csv_processor = csvProc.csvProcessor(self.name_csv)
 
         print('proc stop')
 
