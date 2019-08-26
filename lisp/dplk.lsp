@@ -16,18 +16,10 @@
      )
     (setq aa (list wb ":" ptlist))
     ;改变已选择轮廓的颜色
-    (setq el_data (entget el))
-    (setq k (assoc 62 el_data))
-    (if (= k "")
-      (setq el_data (cons (cons 62 2) el_data))
-      (setq el_data (subst (cons 62 2) (assoc 62 el_data) el_data))
-      )
-    (setq h (assoc 370 el_data))
-    (if (= h "")
-      (setq el_data (cons (cons 370 50) el_data))
-      (setq el_data (subst (cons 370 50) (assoc 370 el_data) el_data))
-      )
-    (entmod el_data)
+    (entmod(append(entget el)'((62 . 2))))
+    ;改变已选择轮廓线的粗细
+    (entmod(append(entget el)'((370 . 50))))
+    ;确认勾选完成输出数据或重新勾选不输出数据
     (princ "\n继续勾选<Enter>重新勾选<Z>")
     (setq j (getstring))
     (if (= j "")
