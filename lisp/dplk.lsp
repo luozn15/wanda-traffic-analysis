@@ -1,6 +1,6 @@
 (defun c:DPLK()
   (setvar "cmdecho" 0)
-  (setq fileph (getfiled "选择文件存储路径" "" "txt" 1));选择文件存储路径
+  (setq fileph (getfiled "选择文件存储路径" "" "csv" 1));选择文件存储路径
   (princ "\n请选择店铺标号(名称):")
   (setq ss (entsel))
   (setq ptlist "")
@@ -15,7 +15,7 @@
       (setq ptlist (cons (cdr n) ptlist)))
      )
     (setq aa (list wb ":" ptlist))
-    (writedata)
+    ;改变已选择轮廓的颜色
     (setq el_data (entget el))
     (setq k (assoc 62 el_data))
     (if (= k "")
@@ -27,6 +27,15 @@
       (setq el_data (cons (cons 370 50) el_data))
       (setq el_data (subst (cons 370 50) (assoc 370 el_data) el_data))
       )
+    (entmod el_data)
+    (princ "\n继续勾选<Enter>重新勾选<Z>")
+    (setq j (getstring))
+    (if (= j "")
+      (writedata))
+    (if (= j "z")
+      (setq el_data (subst k (assoc 62 el_data) el_data)))
+    (if (= j "z")
+      (setq el_data (subst h (assoc 360 el_data) el_data)))
     (entmod el_data)
     (setq ptlist "")
     (princ "\n请选择店铺标号(名称):")
