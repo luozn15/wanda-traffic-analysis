@@ -5,20 +5,26 @@ from matplotlib.patches import Arc
 import matplotlib.pyplot as plt
 
 class dxfProcessor():
+    dxf_path = ''
     dxf = ''
+    line = ''
+    arc = ''
+    ellipse = ''
+    lwpline = ''
+    xa, xi ,ya, yi =0, 0, 0, 0
 
-    def __init__(self,dxf,output_path):
+    def __init__(self,dxf_path):
         print('dxfProcessor inited:')
-        self.dxf = dxfgrabber.readfile(dxf)
-        self.output_path = output_path
-
+        self.dxf = dxfgrabber.readfile(dxf_path)
+        self.dxf_path = dxf_path
         self.line = self.get_line(self.dxf.entities)
         self.arc = self.get_arc(self.dxf.entities)
         self.ellipse = self.get_ellipse(self.dxf.entities)
         self.lwpline = self.get_lwpline(self.dxf.entities)
 
         self.xa, self.xi, self.ya, self.yi = self.set_boundary(self.line)
-        self.draw(self.xa, self.xi, self.ya, self.yi,self.line,self.arc,self.ellipse,self.lwpline)
+        #self.draw(self.xa, self.xi, self.ya, self.yi,self.line,self.arc,self.ellipse,self.lwpline)
+        print('dxfProcessor finished:')
 
 
     def get_line(self,entities):
@@ -83,7 +89,7 @@ class dxfProcessor():
         print(xa,xi,ya,yi)
         return (xa,xi,ya,yi)
 
-    def draw(self,xa,xi,ya,yi,line,arc,ellipse,lwpline):
+    '''def draw(self,xa,xi,ya,yi,line,arc,ellipse,lwpline):
         figure, ax = plt.subplots(figsize=((xa-xi)/10000,(ya-yi)/10000), dpi=100)
         # 设置x，y值域
         ax.set_xlim(left=xi, right=xa,auto=False)
@@ -110,12 +116,12 @@ class dxfProcessor():
             ax.add_line(Line2D(lwpl_xs[i], lwpl_ys[i], linewidth=1, color='red'))
         # 展示
         plt.plot()
-        plt.savefig(self.output_path)
-        #plt.show()
+        plt.savefig('/'.join(self.dxf_path.split('/')[:-2])+'/heat.jpg',dpi = 100)
+        print('/'.join(self.dxf_path.split('/')[:-1])+'/heat.jpg')
+        #plt.show()'''
 
 if __name__ == '__main__':
     print('start')
-    dxfprocessor = dxfProcessor('C:/Users/LuoZN/Desktop/客流数据/客流点位图.dxf','C:/Users/LuoZN/Desktop/a.jpg')
-
+    dxfprocessor = dxfProcessor('C:/Users/LuoZN/Desktop/客流数据/客流点位图.dxf')
     print('stop')
                 
