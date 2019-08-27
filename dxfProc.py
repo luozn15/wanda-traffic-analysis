@@ -23,7 +23,6 @@ class dxfProcessor():
         self.lwpline = self.get_lwpline(self.dxf.entities)
 
         self.xa, self.xi, self.ya, self.yi = self.set_boundary(self.line)
-        #self.draw(self.xa, self.xi, self.ya, self.yi,self.line,self.arc,self.ellipse,self.lwpline)
         print('dxfProcessor finished:')
 
 
@@ -89,36 +88,6 @@ class dxfProcessor():
         print(xa,xi,ya,yi)
         return (xa,xi,ya,yi)
 
-    '''def draw(self,xa,xi,ya,yi,line,arc,ellipse,lwpline):
-        figure, ax = plt.subplots(figsize=((xa-xi)/10000,(ya-yi)/10000), dpi=100)
-        # 设置x，y值域
-        ax.set_xlim(left=xi, right=xa,auto=False)
-        ax.set_ylim(bottom=yi, top=ya,auto=False)
-        line_xs = [0]*len(line)
-        line_ys = [0]*len(line)
-        for i in range(len(line)):
-            (line_xs[i], line_ys[i]) = zip(*line[i])
-
-        for i in range(len(line_xs)):
-            ax.add_line(Line2D(line_xs[i], line_ys[i], linewidth=1, color='blue'))
-            
-        for i in arc:
-            ax.add_patch(Arc(i[0], i[1], i[1], theta1= i[2], theta2=i[3]))
-            
-        for i in ellipse:
-            ax.add_patch(Arc(i[0], i[1], i[2],angle = i[3], theta1= i[4], theta2=i[5]))
-            
-        lwpl_xs = [0]*len(lwpline)
-        lwpl_ys = [0]*len(lwpline)
-        for i in range(len(lwpline)):
-            (lwpl_xs[i], lwpl_ys[i]) = zip(*lwpline[i])
-        for i in range(len(lwpl_xs)):
-            ax.add_line(Line2D(lwpl_xs[i], lwpl_ys[i], linewidth=1, color='red'))
-        # 展示
-        plt.plot()
-        plt.savefig('/'.join(self.dxf_path.split('/')[:-2])+'/heat.jpg',dpi = 100)
-        print('/'.join(self.dxf_path.split('/')[:-1])+'/heat.jpg')
-        #plt.show()'''
 
 if __name__ == '__main__':
     print('start')

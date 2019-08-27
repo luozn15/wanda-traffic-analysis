@@ -1,13 +1,16 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 import sys
+import sip
 
 class FileChooser(QtWidgets.QMainWindow):
     name_file = ['/'.join(sys.path[0].split('\\')[:-1]), '/'.join(sys.path[0].split('\\')[:-1]),'/'.join(sys.path[0].split('\\')[:-1])]#xlsx,dxf,csv
+    date = ''
     file_type = ['Excel File (*.xlsx)','DXF File(*.dxf)','CSV File (*.csv)']
-    status_list = ["选择xlsx文件","选择dxf文件","选择csv文件","计算分析"]
+    status_list = ["选择xlsx文件","选择dxf文件","选择csv文件","选择日期"]
     instructions =  ["<h2>xlsx文件说明</h2> <p>1. 这里可以写一些说明</p> <p>2. 说明</p> <p>3. 这里可以写一些说明</p>",
                     "<h2>dxf文件说明</h2> <p>1. 这里可以写一些说明</p> <p>2. 说明</p> <p>3. 这里可以写一些说明</p>",
                     "<h2>csv文件说明</h2> <p>1. 这里可以写一些说明</p> <p>2. 说明</p> <p>3. 这里可以写一些说明</p>",
+                    "<h2>选择日期说明</h2> <p>1. 格式 yyyy-mm-dd</p> <p>2. 如2018年12月1日为 2018-12-01</p> <p>3. 这里可以写一些说明</p>",
                     ]
     status_id = 0
 
@@ -170,25 +173,29 @@ class FileChooser(QtWidgets.QMainWindow):
         self.right_file_input = QtWidgets.QLineEdit()
         self.right_file_input.setText(self.name_file[self.status_id])
 
-        total_rows = 10
-        total_columns = 10
+        self.total_rows = 10
+        self.total_columns = 10
         self.right_layout.addWidget(self.right_label_1,     0,              0,                  1,              1)
-        self.right_layout.addWidget(self.right_text,        1,              0,                  total_rows-4,   total_columns)
-        #self.right_layout.addWidget(QtWidgets.QLabel(),     total_rows-3,   0,                  1,              total_columns)
-        self.right_layout.addWidget(self.right_file_input,  total_rows-2,   0,                  1,              total_columns-2)
-        self.right_layout.addWidget(self.right_browser,     total_rows-2,   total_columns-2,    1,              1)
-        self.right_layout.addWidget(self.right_confirm,     total_rows-2,   total_columns-1,    1,              1)
+        self.right_layout.addWidget(self.right_text,        1,              0,                  self.total_rows-4,   self.total_columns)
+        #self.right_layout.addWidget(QtWidgets.QLabel(),     self.total_rows-3,   0,                  1,              self.total_columns)
+        self.right_layout.addWidget(self.right_file_input,  self.total_rows-2,   0,                  1,              self.total_columns-2)
+        self.right_layout.addWidget(self.right_browser,     self.total_rows-2,   self.total_columns-2,    1,              1)
+        self.right_layout.addWidget(self.right_confirm,     self.total_rows-2,   self.total_columns-1,    1,              1)
         
     def popFileDialog(self):     
-        if self.status_id == 2 :
-            self.close()
-        self.name_file[self.status_id] = QtWidgets.QFileDialog.getOpenFileName(self, self.status_list[self.status_id], self.name_file[self.status_id], self.file_type[self.status_id])[0]
-        self.right_file_input.setText(self.name_file[self.status_id])
+        '''if self.status_id == 2 :
+            self.close()'''
+        filename = QtWidgets.QFileDialog.getOpenFileNames(self, self.status_list[self.status_id], self.name_file[self.status_id], self.file_type[self.status_id])[0]
+        self.name_file[self.status_id] = filename[0] if len(filename)==1 else filename
+        self.right_file_input.setText(' , '.join(filename))
     
     def confirm(self):
         self.status_id += 1
-        if self.status_id > 2 : self.close()
-        else: self.flash()
+        if self.status_id < len(self.status_list)-1 : self.flash()
+        elif self.status_id == len(self.status_list)-1: self.flash2()
+        else : 
+            self.date = self.right_date_input.text()
+            self.close()
         print('confirm')
         
     def flash(self):
@@ -202,6 +209,27 @@ class FileChooser(QtWidgets.QMainWindow):
         self.right_label_1.setText(self.status_list[self.status_id])
         self.right_text.setText(self.instructions[self.status_id])
         self.right_file_input.setText(self.name_file[self.status_id])
+
+    def flash2(self):
+        for i in range(len(self.left_label)):
+            if i <= self.status_id:
+                self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#ffffff;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
+            else:
+                self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#999999;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
+        #right
+        self.right_label_1.setText(self.status_list[self.status_id])
+        self.right_text.setText(self.instructions[self.status_id])
+        self.right_layout.removeWidget(self.right_file_input)
+        self.right_layout.removeWidget(self.right_browser)
+        sip.delete(self.right_file_input)
+        sip.delete(self.right_browser)
+        self.right_date_input = QtWidgets.QLineEdit()
+        self.right_date_input.setPlaceholderText('yyyy-mm-dd')
+        self.right_date_input.setInputMask('9999-99-99')
+        self.right_layout.addWidget(self.right_date_input,  self.total_rows-2,   0,                  1,              self.total_columns-1)
+        
+
+
 
     def mousePressEvent(self, event):
         if event.button()==QtCore.Qt.LeftButton:
@@ -223,4 +251,5 @@ if __name__ == '__main__':
     filechooser = FileChooser()
     for i in filechooser.name_file:
         print(i)
+    print(filechooser.date)
     print('stop')

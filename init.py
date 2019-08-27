@@ -6,7 +6,8 @@ class Initializer():
     name_xlsx = './'
     name_dxf = './'
     name_csv = './'
-
+    date = ''
+    
     xlsx_processor=''
     dxf_processor=''
     csv_processor=''
@@ -25,6 +26,7 @@ class Initializer():
         self.name_xlsx = filechooser.name_file[0]
         self.name_dxf = filechooser.name_file[1]
         self.name_csv = filechooser.name_file[2]
+        self.date = filechooser.date
         print('GUI stop')
     
     def process(self):
@@ -35,7 +37,7 @@ class Initializer():
         self.xlsx_processor = xlsxProc.xlsxProcessor(self.name_xlsx)
         '''self.traffic_day = xlsx_processor.traffic_day
         self.traffic_hour = xlsx_processor.traffic_hour
-        self.dict_store_name_id = xlsx_processor.dict_store_name_id'''
+        self.dict_store_id_name = xlsx_processor.dict_store_id_name'''
         self.dxf_processor = dxfProc.dxfProcessor(self.name_dxf)
 
         self.csv_processor = csvProc.csvProcessor(self.name_csv)
