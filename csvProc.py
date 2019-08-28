@@ -10,7 +10,7 @@ class csvProcessor():
         csv=[]
         for path in csv_paths:
             f = open(path)
-            temp = pd.read_csv(f,header=None)
+            temp = pd.read_csv(f, header=None)
             f.close()
             csv.append(temp)
         csv = pd.concat(csv,ignore_index= True)
@@ -26,7 +26,8 @@ class csvProcessor():
         print('csvProcessor finished:')
 
     def fixstr(self,s):
-        l = s[5:].split(' : ((')
+        l = s[1:].split(' : ((')
+        l[0]=l[0].split('\\P')[-1]
         l[0]=l[0].split(' ')[-1]
         l[0]=l[0].split(';')[-1].split('}')[0]
         l[0]=[e for e in l[0].split('-') if e != '']
@@ -36,4 +37,5 @@ class csvProcessor():
         return l
 
 if __name__=='__main__':
-    csvprocessor = csvProcessor(['C:/Users/LuoZN/Desktop/客流数据/wanda-traffic/lisp/B1F.csv','C:/Users/LuoZN/Desktop/客流数据/wanda-traffic/lisp/1AF.csv'])
+    csvprocessor = csvProcessor(['C:/Users/LuoZN/Desktop/客流数据/wanda-traffic/lisp/1BF.csv',])
+
