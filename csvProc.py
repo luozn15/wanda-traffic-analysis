@@ -9,7 +9,7 @@ class csvProcessor():
         self.csv_paths = csv_paths
         csv=[]
         for path in csv_paths:
-            f = open(path)
+            f = open(path, 'rb')
             temp = pd.read_csv(f, header=None)
             f.close()
             csv.append(temp)
@@ -37,5 +37,5 @@ class csvProcessor():
         return l
 
 if __name__=='__main__':
-    csvprocessor = csvProcessor(['C:/Users/LuoZN/Desktop/客流数据/wanda-traffic/lisp/1BF.csv',])
+    csvprocessor = csvProcessor(['C:/Users/LuoZN/Desktop/Github/wanda-traffic/lisp/2F.csv','C:/Users/LuoZN/Desktop/Github/wanda-traffic/lisp/3F.csv'])
 
