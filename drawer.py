@@ -106,3 +106,36 @@ class heatDrawer():
         #plt.show()
         print('保存为 '+self.path + '/heat.jpg')
         return self.path + '/heat.jpg'
+
+class inputChecker():
+
+    csvprocessor =''
+    xlsxprocessor =''
+
+    def __init__(self):
+        pass
+
+    def set_data(self,xlsxprocessor,csvprocessor):
+        self.csvprocessor = csvprocessor
+        self.xlsxprocessor =xlsxprocessor
+
+    def get_num_null(self,traffic):
+        num_null = list(traffic.isnull().sum(axis = 0))
+        return num_null
+
+
+    def get_figure(self):
+        num_null_day = self.get_num_null(self.xlsxprocessor.traffic_day)
+        num_null_hour = self.get_num_null(self.xlsxprocessor.traffic_hour)
+        plt.cla()
+        # 获取绘图并绘制
+        fig = plt.figure(figsize=(1500,500))
+        ax1 = fig.add_axes([0, 0, 1, 0.45])
+        '''ax.set_xlim([-1,6])
+        ax.set_ylim([-1,6])'''
+        ax1.plot(num_null_day,'o--')
+        ax2 = fig.add_axes([0, 0.5, 1, 0.45])
+        '''ax.set_xlim([-1,6])
+        ax.set_ylim([-1,6])'''
+        ax2.plot(num_null_hour,'o--')
+        return fig

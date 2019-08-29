@@ -72,3 +72,6 @@ class xlsxProcessor():
         traffic_hour.columns = [level,name]
 
         return traffic_hour
+
+if __name__=='__main__':
+    xlsxprocessor = xlsxProcessor('C:/Users/LuoZN/Desktop/客流数据/【客流+车场数据】0813.xlsx')

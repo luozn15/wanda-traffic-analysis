@@ -16,18 +16,17 @@ class Initializer():
     traffic_hour = []
     dict_store_name_id = {}
 
-    def __init__(self):
-        self.getInput()
+    def __init__(self,filechooser):
+        self.set_input(filechooser)
         self.process()
 
-    def getInput(self):
-        print('GUI start')
-        filechooser = gui.FileChooser()
+    def set_input(self,filechooser):
+        
         self.name_xlsx = filechooser.name_file[0]
         self.name_dxf = filechooser.name_file[1]
         self.name_csv = filechooser.name_file[2]
         self.date = filechooser.date
-        print('GUI stop')
+
     
     def process(self):
         time.sleep(2)
@@ -46,5 +45,7 @@ class Initializer():
 
 
 if __name__ =='__main__':
-
-    initializer = Initializer()
+    print('GUI start')
+    filechooser = gui.fileChooser()
+    print('GUI stop')
+    initializer = Initializer(filechooser)
