@@ -13,6 +13,7 @@ import util
 
 class heatDrawer():
     path = ''
+    date = ''
 
     line = ''
     arc = ''
@@ -27,6 +28,7 @@ class heatDrawer():
     heat = ''
 
     def __init__(self,path):
+        print('draw init')
         self.path = path
 
     def set_data(self,xlsxprocessor,dxfprocessor,csvprocessor,date):
@@ -49,9 +51,11 @@ class heatDrawer():
         arc = self.dxfprocessor.arc
         ellipse = self.dxfprocessor.ellipse
         lwpline = self.dxfprocessor.lwpline
-
+        print('draw begin')
+        plt.clf()
+        plt.close('all')
         figure, ax = plt.subplots(figsize=((xa-xi)/10000,(ya-yi)/10000), dpi=100)
-
+        print('draw begin2')
         # 设置x，y值域
         ax.set_xlim(left=xi, right=xa,auto=False)
         ax.set_ylim(bottom=yi, top=ya,auto=False)
@@ -102,10 +106,11 @@ class heatDrawer():
 
         # 展示
         plt.plot()
-        plt.savefig(self.path + '/heat.jpg',dpi = 100)
+        plt.savefig(self.path + '/heat'+self.date+'.jpg',dpi = 100)
+        
         #plt.show()
-        print('保存为 '+self.path + '/heat.jpg')
-        return self.path + '/heat.jpg'
+        print('保存为 '+self.path + '/heat'+self.date+'.jpg')
+        return self.path + '/heat'+self.date+'.jpg'
 
 class inputChecker():
 
@@ -129,13 +134,14 @@ class inputChecker():
         num_null_hour = self.get_num_null(self.xlsxprocessor.traffic_hour)
         plt.cla()
         # 获取绘图并绘制
-        fig = plt.figure(figsize=(1500,500))
-        ax1 = fig.add_axes([0, 0, 1, 0.45])
-        '''ax.set_xlim([-1,6])
-        ax.set_ylim([-1,6])'''
+        self.fig = plt.figure(figsize=(1500,500))
+        ax1 = self.fig.add_axes([0, 0, 1, 0.45])
         ax1.plot(num_null_day,'o--')
-        ax2 = fig.add_axes([0, 0.5, 1, 0.45])
-        '''ax.set_xlim([-1,6])
-        ax.set_ylim([-1,6])'''
+        ax2 = self.fig.add_axes([0, 0.5, 1, 0.45])
         ax2.plot(num_null_hour,'o--')
-        return fig
+        plt.plot()
+        return self.fig
+
+    def close_fig(self):
+        plt.close()
+        plt.clf()

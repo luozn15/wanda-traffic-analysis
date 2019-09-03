@@ -1,6 +1,7 @@
 import xlsxProc, dxfProc, csvProc
 import gui
 import time
+from multiprocessing import Process
 
 class Initializer():
     name_xlsx = './'
@@ -27,21 +28,44 @@ class Initializer():
         self.name_csv = filechooser.name_file[2]
         self.date = filechooser.date
 
-    
+    def P_xlsx(self,xlsx_processor,name_xlsx):
+        print('xlsx begin')
+        xlsx_processor = xlsxProc.xlsxProcessor(name_xlsx)
+        print('xlsx finish')
+
+    def P_dxf(self,dxf_processor,name_dxf):
+        print('dxf begin')
+        dxf_processor = dxfProc.dxfProcessor(name_dxf)
+        print('dxf finish')
+
+    def P_csv(self,csv_processor,name_csv):
+        print('csv begin')
+        csv_processor = csvProc.csvProcessor(name_csv)
+        print('csv finish')
+
     def process(self):
         time.sleep(2)
-        print('proc start')
+        print('init start')
         print(self.name_xlsx,self.name_dxf, self.name_csv)
 
-        self.xlsx_processor = xlsxProc.xlsxProcessor(self.name_xlsx)
-        '''self.traffic_day = xlsx_processor.traffic_day
-        self.traffic_hour = xlsx_processor.traffic_hour
-        self.dict_store_id_name = xlsx_processor.dict_store_id_name'''
+        '''self.xlsx_processor = xlsxProc.xlsxProcessor(self.name_xlsx)
+
         self.dxf_processor = dxfProc.dxfProcessor(self.name_dxf)
 
-        self.csv_processor = csvProc.csvProcessor(self.name_csv)
+        self.csv_processor = csvProc.csvProcessor(self.name_csv)'''
 
-        print('proc stop')
+        p_xlsx = Process(target = self.P_xlsx,args = (self.xlsx_processor,self.name_xlsx))
+        p_dxf = Process(target = self.P_dxf,args = (self.dxf_processor,self.name_dxf))
+        p_csv = Process(target = self.P_csv,args = (self.csv_processor,self.name_csv))
+
+        p_xlsx.start()
+        p_dxf.start()
+        p_csv.start()
+        p_xlsx.join()
+        p_dxf.join()
+        p_csv.join()
+
+        print('init stop')
 
 
 if __name__ =='__main__':

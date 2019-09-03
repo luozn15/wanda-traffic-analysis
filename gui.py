@@ -9,10 +9,10 @@ class fileChooser(QtWidgets.QMainWindow):
     name_file = ['/'.join(sys.path[0].split('\\')[:-1]), '/'.join(sys.path[0].split('\\')[:-1]),'/'.join(sys.path[0].split('\\')[:-1])]#xlsx,dxf,csv
     date = ''
     file_type = ['Excel File (*.xlsx)','DXF File(*.dxf)','CSV File (*.csv)']
-    status_list = ["选择xlsx文件","选择dxf文件","选择csv文件","选择日期"]
-    instructions =  ["<h2>xlsx文件说明</h2> <p>1. 这里可以写一些说明</p> <p>2. 说明</p> <p>3. 这里可以写一些说明</p>",
-                    "<h2>dxf文件说明</h2> <p>1. 这里可以写一些说明</p> <p>2. 说明</p> <p>3. 这里可以写一些说明</p>",
-                    "<h2>csv文件说明</h2> <p>1. 这里可以写一些说明</p> <p>2. 说明</p> <p>3. 这里可以写一些说明</p>",
+    status_list = ["选择xlsx文件","选择dxf文件","选择csv文件"]#,"选择日期"]
+    instructions =  ["<h2>xlsx文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2. 选取包含客流信息的.xlsx文件</p> <p>3. 点击右下“确认”按钮</p>",
+                    "<h2>dxf文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2.选取由dwg格式的平面图纸另存的.dxf文件（不限版本）</p> <p>3. 点击右下“确认”按钮</p>",
+                    "<h2>csv文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2. 选取由autolisp脚本保存的.csv文件（可多选）</p> <p>3. 点击右下“确认”按钮</p>",
                     "<h2>选择日期说明</h2> <p>1. 格式 yyyy-mm-dd</p> <p>2. 如2018年12月1日为 2018-12-01</p> <p>3. 这里可以写一些说明</p>",
                     ]
     status_id = 0
@@ -197,10 +197,10 @@ class fileChooser(QtWidgets.QMainWindow):
     
     def confirm(self):
         self.status_id += 1
-        if self.status_id < len(self.status_list)-1 : self.flash()
-        elif self.status_id == len(self.status_list)-1: self.flash2()
+        if self.status_id < len(self.status_list) : self.flash()
+        #elif self.status_id == len(self.status_list)-1: self.flash2()
         else : 
-            self.date = self.right_date_input.text()
+            #self.date = self.right_date_input.text()
             self.close()
         print('confirm')
         
@@ -254,6 +254,9 @@ class fileChooser(QtWidgets.QMainWindow):
 
 
 
+
+
+
 class pltWindow(QtWidgets.QMainWindow):
     csvprocessor =''
     xlsxprocessor =''
@@ -265,6 +268,7 @@ class pltWindow(QtWidgets.QMainWindow):
         app = QtWidgets.QApplication(sys.argv)
         super().__init__()
         self.initUI()
+        #self.plot_()
         self.show()
         app.exec_()
 
@@ -347,32 +351,64 @@ class pltWindow(QtWidgets.QMainWindow):
         self.top_layout.addWidget(self.top_close,       0,  blank+2,    1,  1)
         self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  blank+3)
 
+        self.topFiller = QtWidgets.QWidget()
+        self.topFiller.setMinimumSize(250, 2000)#######设置滚动条的尺寸
+        self.scroll_layout = QtWidgets.QVBoxLayout() 
+        self.topFiller.setLayout(self.scroll_layout)
+
+        self.tableWidget_day = QtWidgets.QTableWidget()
+        num_null_day = self.get_num_null(self.xlsxprocessor.traffic_day)
+        self.tableWidget_day.setRowCount(2)
+        self.tableWidget_day.setColumnCount(len(num_null_day))
+        self.tableWidget_day.setHorizontalHeaderLabels([b for a,b in list(num_null_day.index)])
+        for i in range(len(num_null_day)):
+            self.tableWidget_day.setItem(0,i,QtWidgets.QTableWidgetItem(num_null_day[i]))
+
+        self.tableWidget_hour = QtWidgets.QTableWidget()
+        num_null_hour = self.get_num_null(self.xlsxprocessor.traffic_hour)
+        self.tableWidget_hour.setRowCount(2)
+        self.tableWidget_hour.setColumnCount(len(num_null_hour))
+        self.tableWidget_hour.setHorizontalHeaderLabels([b for a,b in list(num_null_hour.index)])
+        for i in range(len(num_null_hour)):
+            self.tableWidget_hour.setItem(0,i,QtWidgets.QTableWidgetItem(num_null_hour[i]))
+
+        self.scroll_layout.addWidget(self.tableWidget_day)
+        self.scroll_layout.addWidget(self.tableWidget_hour)
+        self.scroll_layout.addStretch(1)
+        self.scroll = QtWidgets.QScrollArea()
+        self.scroll.setLayout(self.scroll_layout)
+        self.bottom_layout.addWidget(self.scroll,0,0,5,blank+3)
+
+
         self.bottom_buttun1 = QtWidgets.QPushButton('继续')
         self.bottom_buttun2 = QtWidgets.QPushButton('退出')
-        self.bottom_layout.addWidget(QtWidgets.QLabel(''),    1,    0,    1,  blank+1)
-        self.bottom_layout.addWidget(self.bottom_buttun1,     1,    blank+1,    1,  1)
-        self.bottom_layout.addWidget(self.bottom_buttun2,     1,    blank+2,    1,  1)
+        self.bottom_layout.addWidget(QtWidgets.QLabel(''),    5,    0,    1,  blank+1)
+        self.bottom_layout.addWidget(self.bottom_buttun1,     5,    blank+1,    1,  1)
+        self.bottom_layout.addWidget(self.bottom_buttun2,     5,    blank+2,    1,  1)
         self.bottom_buttun1.clicked.connect(self.close)
-        self.bottom_buttun1.clicked.connect(sys.exit)
-        '''# 添加菜单中的按钮
-        self.menu = QtWidgets.QMenu("绘图")
-        self.menu_action = QtWidgets.QAction("绘制",self.menu)
-        self.menu.addAction(self.menu_action)
-        self.menuBar().addMenu(self.menu)
-        # 添加事件
-        self.menu_action.triggered.connect(self.plot_)'''
+        self.bottom_buttun2.clicked.connect(sys.exit)
+
         #self.plot_()
         #self.setCentralWidget(QtWidgets.QWidget())
 
     # 绘图方法
     def plot_(self):
-        inputchecker = drawer.inputChecker()
-        inputchecker.set_data(self.xlsxprocessor,self.csvprocessor)
-        fig = inputchecker.get_figure()
-        cavans = FigureCanvas(fig)
+        self.inputchecker = drawer.inputChecker()
+        self.inputchecker.set_data(self.xlsxprocessor,self.csvprocessor)
+        self.fig = self.inputchecker.get_figure()
+        cavans = FigureCanvas(self.fig)
         # 将绘制好的图像设置为中心 Widget
         blank = 15
         self.bottom_layout.addWidget(cavans,0,0,5,blank+3)
+
+    def get_num_null(self,traffic):
+        num_null = traffic.isnull().sum(axis = 0)
+        return num_null
+
+    def close_(self):
+        self.inputchecker.close_fig()
+        plt.close(self.fig)
+        self.close()
     
     def mousePressEvent(self, event):
         if event.button()==QtCore.Qt.LeftButton:
@@ -389,6 +425,148 @@ class pltWindow(QtWidgets.QMainWindow):
     def mouseReleaseEvent(self, QMouseEvent):
         self.m_flag=False
     
+
+
+
+
+
+
+
+class dateChooser(QtWidgets.QMainWindow):
+
+    dates =[]
+    dates_chosen = []
+
+    def __init__(self,xlsxprocessor):
+
+        self.dates =xlsxprocessor.dates
+
+        app = QtWidgets.QApplication(sys.argv)
+        super().__init__()
+        self.initUI()
+        self.show()
+        app.exec_()
+
+    def initUI(self):
+
+        self.setFixedSize(400,800)
+        self.move(300, 300)
+        self.setWindowTitle('选择日期')
+
+        self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
+        self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
+        self.main_widget.setLayout(self.main_layout)  # 设置窗口主部件布局为网格布局
+        self.setObjectName('main_widget')
+        
+
+
+        self.top_widget = QtWidgets.QWidget()  # 创建上侧部件
+        self.top_widget.setObjectName('top_widget')
+        self.top_layout = QtWidgets.QGridLayout()  # 创建上侧部件的网格布局层
+        self.top_widget.setLayout(self.top_layout) # 设置上侧部件布局为网格
+        self.top_widget.setStyleSheet('''
+                                        QWidget#top_widget{
+                                            color:#333333;
+                                            background:#fafafa;
+                                            border-top:1px solid darkGray;
+                                            border-left:1px solid darkGray;
+                                            border-right:1px solid darkGray;
+                                            border-top-left-radius:10px;
+                                            border-top-right-radius:10px;
+                                        }
+                                    ''')
+
+        self.bottom_widget = QtWidgets.QWidget()  # 创建上侧部件
+        self.bottom_widget.setObjectName('bottom_widget')
+        self.bottom_layout = QtWidgets.QGridLayout()  # 创建上侧部件的网格布局层
+        self.bottom_widget.setLayout(self.bottom_layout) # 设置上侧部件布局为网格
+        self.bottom_widget.setStyleSheet('''
+                                        QWidget#bottom_widget{
+                                            color:#333333;
+                                            background:#fafafa;
+                                            border-top:1px solid darkGray;
+                                            border-left:1px solid darkGray;
+                                            border-right:1px solid darkGray;
+                                            border-top-left-radius:10px;
+                                            border-top-right-radius:10px;
+                                        }
+                                    ''')
+
+        
+        self.main_layout.addWidget(self.top_widget,     0,0,2,12) 
+        self.main_layout.addWidget(self.bottom_widget,     2,0,10,12) 
+        self.main_layout.setSpacing(0)
+        self.setCentralWidget(self.main_widget) # 设置窗口主部件
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        self.setWindowOpacity(0.99) # 设置窗口透明度
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground) # 设置窗口背景透明
+
+        # top
+        self.top_label_1 = QtWidgets.QLabel('客流分析')
+        self.top_label_1.setFont(QtGui.QFont("黑体",20,QtGui.QFont.Bold))
+        self.top_label_2 = QtWidgets.QLabel('版本  1')
+        self.top_label_2.setFont(QtGui.QFont("黑体",15,QtGui.QFont.Normal))
+        self.top_mini = QtWidgets.QPushButton("")  # 最小化按钮
+        self.top_visit = QtWidgets.QPushButton("") # 空白按钮
+        self.top_close = QtWidgets.QPushButton("") # 关闭按钮
+        self.top_mini.setFixedSize(15, 15) # 设置最小化按钮大小
+        self.top_visit.setFixedSize(15, 15)  # 设置按钮大小
+        self.top_close.setFixedSize(15,15)
+        self.top_mini.setStyleSheet('''QPushButton{background:#6DDF6D;border-radius:5px;}QPushButton:hover{background:green;}''')
+        self.top_visit.setStyleSheet('''QPushButton{background:#F7D674;border-radius:5px;}QPushButton:hover{background:yellow;}''')
+        self.top_close.setStyleSheet('''QPushButton{background:#F76677;border-radius:5px;}QPushButton:hover{background:red;}''')
+        self.top_mini.clicked.connect(self.showMinimized)
+        self.top_visit.clicked.connect(self.showNormal)
+        self.top_close.clicked.connect(sys.exit)
+        blank = 15
+        self.top_layout.addWidget(self.top_label_1,     0,  0,          1,  blank)
+        self.top_layout.addWidget(self.top_label_2,     1,  0,          1,  blank)
+        self.top_layout.addWidget(self.top_mini,        0,  blank,      1,  1)
+        self.top_layout.addWidget(self.top_visit,       0,  blank+1,    1,  1)
+        self.top_layout.addWidget(self.top_close,       0,  blank+2,    1,  1)
+        self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  blank+3)
+
+        self.topFiller = QtWidgets.QWidget()
+        self.topFiller.setMinimumSize(250, 2000)#######设置滚动条的尺寸
+        self.scroll_layout = QtWidgets.QVBoxLayout() 
+        self.topFiller.setLayout(self.scroll_layout)
+        self.datechecks = [QtWidgets.QCheckBox(date,self.topFiller) for date in self.dates]
+        for check in self.datechecks:
+
+            self.scroll_layout.addWidget(check)
+        self.scroll_layout.addStretch(1)
+        self.scroll = QtWidgets.QScrollArea()
+        self.scroll.setWidget(self.topFiller)
+
+        self.bottom_buttun1 = QtWidgets.QPushButton('继续')
+        self.bottom_buttun2 = QtWidgets.QPushButton('退出')
+
+        self.bottom_layout.addWidget(self.scroll,0,0,5,blank+3)
+        self.bottom_layout.addWidget(QtWidgets.QLabel(''),    5,    0,    1,  blank+1)
+        self.bottom_layout.addWidget(self.bottom_buttun1,     5,    blank+1,    1,  1)
+        self.bottom_layout.addWidget(self.bottom_buttun2,     5,    blank+2,    1,  1)
+        self.bottom_buttun1.clicked.connect(self.continue_)
+        self.bottom_buttun2.clicked.connect(sys.exit)
+    
+    def continue_(self):
+        self.dates_chosen = [date for date, datecheck in zip(self.dates, self.datechecks) if datecheck.isChecked()]
+        print(self.dates_chosen)
+        self.close()
+
+    def mousePressEvent(self, event):
+        if event.button()==QtCore.Qt.LeftButton:
+            self.m_flag=True
+            self.m_Position=event.globalPos()-self.pos() #获取鼠标相对窗口的位置
+            event.accept()
+            #self.setCursor(QtCore.QCursor(QtCore.Qt.OpenHandCursor))  #更改鼠标图标
+
+    def mouseMoveEvent(self, QMouseEvent):
+        if QtCore.Qt.LeftButton and self.m_flag:  
+            self.move(QMouseEvent.globalPos()-self.m_Position)#更改窗口位置
+            QMouseEvent.accept()
+            
+    def mouseReleaseEvent(self, QMouseEvent):
+        self.m_flag=False
     
 if __name__ == '__main__':
     print('start')
@@ -397,5 +575,6 @@ if __name__ == '__main__':
         print(i)
     print(filechooser.date)
 '''
-    pltwindow = pltWindow('a','bi')
+    #pltwindow = pltWindow('a','bi')
+    datechooser = dateChooser(['a','bi'])
     print('stop')

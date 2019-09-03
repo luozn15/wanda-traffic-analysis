@@ -3,20 +3,25 @@ import numpy as np
 
 class xlsxProcessor():
     xlsx = ''
+    dates = []
     traffic_day = []
     traffic_hour = []
     dict_store_name_id ={}
+    dict_store_id_name ={}
 
     def __init__(self,xlsx):
         print('xlsxProcessor inited:')
         self.xlsx = xlsx
         traffic_pathway_day = self.read_traffic_pathway_day()
-        traffic_store_day, self.dict_store_name_id = self.read_traffic_store_day()
+        traffic_store_day, self.dict_store_name_id, self.dict_store_id_name = self.read_traffic_store_day()
         traffic_entry_parking_day = self.read_traffic_entry_parking_day()
 
         self.traffic_day = pd.concat([traffic_pathway_day,traffic_store_day,traffic_entry_parking_day], axis=1)
         self.traffic_hour = self.read_traffic_hour()
         print(self.traffic_day.head(5),self.traffic_hour.head(5))
+
+        self.dates = [str(ts.date()) for ts in list(self.traffic_day.index)]
+        
         print('xlsxProcessor finished:')
 
     def read_traffic_pathway_day(self):
@@ -38,7 +43,11 @@ class xlsxProcessor():
         traffic_store_day['日期'] = pd.to_datetime(traffic_store_day['日期'])
         traffic_store_day = traffic_store_day.set_index('日期',drop = True)
         traffic_store_day.columns =[['店铺级' for i in name_store],name_store]
-        return (traffic_store_day, dict_store_name_id)
+        dict_store_id_name = {}
+        for name,ids in dict_store_name_id.items() :
+            for id_ in ids:
+                dict_store_id_name[id_]=name
+        return (traffic_store_day, dict_store_name_id, dict_store_id_name)
 
     def read_traffic_entry_parking_day(self):
         traffic_entry_parking_day= pd.read_excel(self.xlsx,'停车入口日客流量')
