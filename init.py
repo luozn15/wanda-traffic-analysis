@@ -1,7 +1,7 @@
 import xlsxProc, dxfProc, csvProc
 import gui
 import time
-from multiprocessing import Process
+from multiprocessing import Pool
 
 class Initializer():
     name_xlsx = './'
@@ -28,45 +28,46 @@ class Initializer():
         self.name_csv = filechooser.name_file[2]
         self.date = filechooser.date
 
-    def P_xlsx(self,xlsx_processor,name_xlsx):
-        print('xlsx begin')
+    def P_xlsx(self,name_xlsx):
         xlsx_processor = xlsxProc.xlsxProcessor(name_xlsx)
-        print('xlsx finish')
+        return xlsx_processor
 
-    def P_dxf(self,dxf_processor,name_dxf):
-        print('dxf begin')
+    def P_dxf(self,name_dxf):
         dxf_processor = dxfProc.dxfProcessor(name_dxf)
-        print('dxf finish')
+        return dxf_processor
 
-    def P_csv(self,csv_processor,name_csv):
-        print('csv begin')
+    def P_csv(self,name_csv):
         csv_processor = csvProc.csvProcessor(name_csv)
-        print('csv finish')
+        return csv_processor
 
     def process(self):
         time.sleep(2)
         print('init start')
-        print(self.name_xlsx,self.name_dxf, self.name_csv)
+        #print(self.name_xlsx,self.name_dxf, self.name_csv)
 
         '''self.xlsx_processor = xlsxProc.xlsxProcessor(self.name_xlsx)
 
         self.dxf_processor = dxfProc.dxfProcessor(self.name_dxf)
 
         self.csv_processor = csvProc.csvProcessor(self.name_csv)'''
+        pool = Pool(3)
 
-        p_xlsx = Process(target = self.P_xlsx,args = (self.xlsx_processor,self.name_xlsx))
-        p_dxf = Process(target = self.P_dxf,args = (self.dxf_processor,self.name_dxf))
-        p_csv = Process(target = self.P_csv,args = (self.csv_processor,self.name_csv))
+        self.xlsx_processor = pool.map(self.P_xlsx,(self.name_xlsx,))[0]
+        self.dxf_processor = pool.map(self.P_dxf,(self.name_dxf,))[0]
+        self.csv_processor = pool.map(self.P_csv,(self.name_csv,))[0]
 
-        p_xlsx.start()
+        '''p_xlsx.start()
         p_dxf.start()
         p_csv.start()
         p_xlsx.join()
         p_dxf.join()
-        p_csv.join()
-
+        p_csv.join()'''
+        #print('xlsx',self.xlsx_processor.xlsx)
+        #print('dxf',self.dxf_processor.dxf)
+        #print('csv',self.csv_processor.csv)
+        pool.close()
+        pool.join()
         print('init stop')
-
 
 if __name__ =='__main__':
     print('GUI start')

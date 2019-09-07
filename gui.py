@@ -188,7 +188,10 @@ class fileChooser(QtWidgets.QMainWindow):
     def popFileDialog(self):     
         '''if self.status_id == 2 :
             self.close()'''
-        filename = QtWidgets.QFileDialog.getOpenFileNames(self, self.status_list[self.status_id], self.name_file[self.status_id], self.file_type[self.status_id])[0]
+        name_inline = self.name_file[self.status_id]
+        if type(name_inline) == list:
+            name_inline = ','.join(name_inline)
+        filename = QtWidgets.QFileDialog.getOpenFileNames(self, self.status_list[self.status_id], name_inline, self.file_type[self.status_id])[0]
         print(filename)
         self.name_file[self.status_id] = filename[0] if self.status_id < 2 and len(filename)==1 else filename
         print(self.name_file[self.status_id])

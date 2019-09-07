@@ -18,10 +18,9 @@ class xlsxProcessor():
 
         self.traffic_day = pd.concat([traffic_pathway_day,traffic_store_day,traffic_entry_parking_day], axis=1)
         self.traffic_hour = self.read_traffic_hour()
-        print(self.traffic_day.head(5),self.traffic_hour.head(5))
+        #print(self.traffic_day.head(5),self.traffic_hour.head(5))
 
         self.dates = [str(ts.date()) for ts in list(self.traffic_day.index)]
-        
         print('xlsxProcessor finished:')
 
     def read_traffic_pathway_day(self):

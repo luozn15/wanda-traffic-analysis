@@ -85,7 +85,7 @@ class dxfProcessor():
         xi=min(x)
         ya=max(y)
         yi=min(y)
-        print(xa,xi,ya,yi)
+        #print(xa,xi,ya,yi)
         return (xa,xi,ya,yi)
 
 

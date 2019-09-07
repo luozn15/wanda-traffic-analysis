@@ -19,7 +19,7 @@ class csvProcessor():
         csv['id'] = [i[0] for i in temp]
         csv['boundary'] = [i[1] for i in temp]
         del csv[0]
-        print(list(csv['id']))
+        #print(list(csv['id']))
 
         self.csv =csv
 
