@@ -3,18 +3,23 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 import drawer
 import sys
-import sip
+from datetime import datetime
+#import sip
+
+import pandas as pd
+import numpy as np
 
 class fileChooser(QtWidgets.QMainWindow):
     name_file = ['/'.join(sys.path[0].split('\\')[:-1]), '/'.join(sys.path[0].split('\\')[:-1]),'/'.join(sys.path[0].split('\\')[:-1])]#xlsx,dxf,csv
     date = ''
-    file_type = ['Excel File (*.xlsx)','DXF File(*.dxf)','CSV File (*.csv)']
-    status_list = ["选择xlsx文件","选择dxf文件","选择csv文件"]#,"选择日期"]
+    file_type = ['Excel File (*.xlsx)','DXF File(*.dxf)']#,'CSV File (*.csv)']
+    status_list = ["选择xlsx文件","选择dxf文件"]#,"选择csv文件"]
     instructions =  ["<h2>xlsx文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2. 选取包含客流信息的.xlsx文件</p> <p>3. 点击右下“确认”按钮</p>",
                     "<h2>dxf文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2.选取由dwg格式的平面图纸另存的.dxf文件（不限版本）</p> <p>3. 点击右下“确认”按钮</p>",
-                    "<h2>csv文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2. 选取由autolisp脚本保存的.csv文件（可多选）</p> <p>3. 点击右下“确认”按钮</p>",
-                    "<h2>选择日期说明</h2> <p>1. 格式 yyyy-mm-dd</p> <p>2. 如2018年12月1日为 2018-12-01</p> <p>3. 这里可以写一些说明</p>",
                     ]
+                    #"<h2>csv文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2. 选取由autolisp脚本保存的.csv文件（可多选）</p> <p>3. 点击右下“确认”按钮</p>",
+                    #"<h2>选择日期说明</h2> <p>1. 格式 yyyy-mm-dd</p> <p>2. 如2018年12月1日为 2018-12-01</p> <p>3. 这里可以写一些说明</p>",
+                    #]
     status_id = 0
 
     def __init__(self):
@@ -192,15 +197,16 @@ class fileChooser(QtWidgets.QMainWindow):
         if type(name_inline) == list:
             name_inline = ','.join(name_inline)
         filename = QtWidgets.QFileDialog.getOpenFileNames(self, self.status_list[self.status_id], name_inline, self.file_type[self.status_id])[0]
-        print(filename)
-        self.name_file[self.status_id] = filename[0] if self.status_id < 2 and len(filename)==1 else filename
+        #print(filename)
+        self.name_file[self.status_id] = filename[0]# if self.status_id < 2 and len(filename)==1 else filename
         print(self.name_file[self.status_id])
 
         self.right_file_input.setText(' , '.join(filename))
     
     def confirm(self):
         self.status_id += 1
-        if self.status_id < len(self.status_list) : self.flash()
+        if self.status_id < len(self.status_list): 
+            self.flash()
         #elif self.status_id == len(self.status_list)-1: self.flash2()
         else : 
             #self.date = self.right_date_input.text()
@@ -219,7 +225,7 @@ class fileChooser(QtWidgets.QMainWindow):
         self.right_text.setText(self.instructions[self.status_id])
         self.right_file_input.setText(self.name_file[self.status_id])
 
-    def flash2(self):
+    '''def flash2(self):
         for i in range(len(self.left_label)):
             if i <= self.status_id:
                 self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#ffffff;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
@@ -236,7 +242,7 @@ class fileChooser(QtWidgets.QMainWindow):
         self.right_date_input.setPlaceholderText('yyyy-mm-dd')
         self.right_date_input.setInputMask('9999-99-99')
         self.right_layout.addWidget(self.right_date_input,  self.total_rows-2,   0,                  1,              self.total_columns-1)
-        
+        '''
 
 
 
@@ -260,13 +266,16 @@ class fileChooser(QtWidgets.QMainWindow):
 
 
 
-class pltWindow(QtWidgets.QMainWindow):
+class inputChecker(QtWidgets.QMainWindow):
     csvprocessor =''
     xlsxprocessor =''
+    traffic_day = ''
+    traffic_hour = ''
 
-    def __init__(self,xlsxprocessor,csvprocessor):
-        self.csvprocessor = csvprocessor
-        self.xlsxprocessor =xlsxprocessor
+    def __init__(self,traffic_day,traffic_hour): #,csvprocessor):
+        #self.csvprocessor = csvprocessor
+        self.traffic_day = traffic_day
+        self.traffic_hour = traffic_hour
 
         app = QtWidgets.QApplication(sys.argv)
         super().__init__()
@@ -277,8 +286,8 @@ class pltWindow(QtWidgets.QMainWindow):
 
     def initUI(self):
 
-        self.setFixedSize(1600,800)
-        self.move(300, 300)
+        self.setFixedSize(500,800)
+        #self.move(300, 300)
         self.setWindowTitle('空值检查')
 
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
@@ -304,9 +313,22 @@ class pltWindow(QtWidgets.QMainWindow):
                                         }
                                     ''')
 
+        self.mid_widget = QtWidgets.QWidget()
+        self.mid_widget.setObjectName('mid_widget')
+        self.mid_layout = QtWidgets.QGridLayout()
+        self.mid_widget.setLayout(self.mid_layout)
+        self.mid_widget.setStyleSheet('''
+                                        QWidget#mid_widget{
+                                            color:#333333;
+                                            background:#fafafa;
+                                            border-left:1px solid darkGray;
+                                            border-right:1px solid darkGray;
+                                        }
+                                    ''')
+
         self.bottom_widget = QtWidgets.QWidget()  # 创建上侧部件
         self.bottom_widget.setObjectName('bottom_widget')
-        self.bottom_layout = QtWidgets.QGridLayout()  # 创建上侧部件的网格布局层
+        self.bottom_layout = QtWidgets.QHBoxLayout()  # 创建上侧部件的网格布局层
         self.bottom_widget.setLayout(self.bottom_layout) # 设置上侧部件布局为网格
         self.bottom_widget.setStyleSheet('''
                                         QWidget#bottom_widget{
@@ -315,14 +337,16 @@ class pltWindow(QtWidgets.QMainWindow):
                                             border-top:1px solid darkGray;
                                             border-left:1px solid darkGray;
                                             border-right:1px solid darkGray;
-                                            border-top-left-radius:10px;
-                                            border-top-right-radius:10px;
+                                            border-bottom:1px solid darkGray;
+                                            border-bottom-left-radius:10px;
+                                            border-bottom-right-radius:10px;
                                         }
                                     ''')
 
         
-        self.main_layout.addWidget(self.top_widget,     0,0,2,12) 
-        self.main_layout.addWidget(self.bottom_widget,     2,0,10,12) 
+        self.main_layout.addWidget(self.top_widget,     0,0,2,1) 
+        self.main_layout.addWidget(self.mid_widget,     2,0,10,1)
+        self.main_layout.addWidget(self.bottom_widget,     12,0,1,1)  
         self.main_layout.setSpacing(0)
         self.setCentralWidget(self.main_widget) # 设置窗口主部件
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
@@ -346,48 +370,68 @@ class pltWindow(QtWidgets.QMainWindow):
         self.top_mini.clicked.connect(self.showMinimized)
         self.top_visit.clicked.connect(self.showNormal)
         self.top_close.clicked.connect(sys.exit)
-        blank = 15
-        self.top_layout.addWidget(self.top_label_1,     0,  0,          1,  blank)
-        self.top_layout.addWidget(self.top_label_2,     1,  0,          1,  blank)
-        self.top_layout.addWidget(self.top_mini,        0,  blank,      1,  1)
-        self.top_layout.addWidget(self.top_visit,       0,  blank+1,    1,  1)
-        self.top_layout.addWidget(self.top_close,       0,  blank+2,    1,  1)
-        self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  blank+3)
+        #blank = 15
+        self.top_layout.addWidget(self.top_label_1,     0,  0,          1,  15)
+        self.top_layout.addWidget(self.top_label_2,     1,  0,          1,  15)
+        self.top_layout.addWidget(self.top_mini,        0,  15,      1,  1)
+        self.top_layout.addWidget(self.top_visit,       0,  16,    1,  1)
+        self.top_layout.addWidget(self.top_close,       0,  17,    1,  1)
+        self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  18)
 
-        self.topFiller = QtWidgets.QWidget()
-        self.topFiller.setMinimumSize(250, 2000)#######设置滚动条的尺寸
-        self.scroll_layout = QtWidgets.QVBoxLayout() 
-        self.topFiller.setLayout(self.scroll_layout)
+        '''self.scroll_day = QtWidgets.QWidget()
+        self.scroll_day.setMinimumSize(2000, 250)#######设置滚动条的尺寸
+        self.scroll_day_layout = QtWidgets.QVBoxLayout() 
+        self.scroll_day.setLayout(self.scroll_day_layout)'''
 
         self.tableWidget_day = QtWidgets.QTableWidget()
-        num_null_day = self.get_num_null(self.xlsxprocessor.traffic_day)
-        self.tableWidget_day.setRowCount(2)
-        self.tableWidget_day.setColumnCount(len(num_null_day))
-        self.tableWidget_day.setHorizontalHeaderLabels([b for a,b in list(num_null_day.index)])
+        num_null_day = self.get_num_null(self.traffic_day)
+        dates = [timeStamp.strftime("%Y-%m-%d")  for timeStamp in num_null_day.index]
+        self.tableWidget_day.setRowCount(len(num_null_day))
+        self.tableWidget_day.setColumnCount(1)
+        self.tableWidget_day.setHorizontalHeaderLabels(['空值数量'])
+        self.tableWidget_day.setVerticalHeaderLabels(dates)
         for i in range(len(num_null_day)):
-            self.tableWidget_day.setItem(0,i,QtWidgets.QTableWidgetItem(num_null_day[i]))
+            item = QtWidgets.QTableWidgetItem(str(num_null_day[i]))
+            self.tableWidget_day.setItem(0,i,item)
+
+        '''self.scroll_hour = QtWidgets.QWidget()
+        self.scroll_hour.setMinimumSize(2000, 250)#######设置滚动条的尺寸
+        self.scroll_hour_layout = QtWidgets.QVBoxLayout() 
+        self.scroll_hour.setLayout(self.scroll_hour_layout)'''
 
         self.tableWidget_hour = QtWidgets.QTableWidget()
-        num_null_hour = self.get_num_null(self.xlsxprocessor.traffic_hour)
-        self.tableWidget_hour.setRowCount(2)
-        self.tableWidget_hour.setColumnCount(len(num_null_hour))
-        self.tableWidget_hour.setHorizontalHeaderLabels([b for a,b in list(num_null_hour.index)])
+        num_null_hour = self.get_num_null(self.traffic_hour)
+        hours = [date.strftime("%Y-%m-%d ") + time.replace(' ', '')  for date, time in num_null_hour.index]
+        self.tableWidget_hour.setRowCount(len(num_null_hour))
+        self.tableWidget_hour.setColumnCount(1)
+        self.tableWidget_hour.setHorizontalHeaderLabels(['空值数量'])
+        self.tableWidget_hour.setVerticalHeaderLabels(hours)
         for i in range(len(num_null_hour)):
-            self.tableWidget_hour.setItem(0,i,QtWidgets.QTableWidgetItem(num_null_hour[i]))
+            item = QtWidgets.QTableWidgetItem(str(num_null_hour[i]))
+            self.tableWidget_hour.setItem(0,i,item)
 
-        self.scroll_layout.addWidget(self.tableWidget_day)
-        self.scroll_layout.addWidget(self.tableWidget_hour)
-        self.scroll_layout.addStretch(1)
-        self.scroll = QtWidgets.QScrollArea()
-        self.scroll.setLayout(self.scroll_layout)
-        self.bottom_layout.addWidget(self.scroll,0,0,5,blank+3)
+        self.scroll_day_layout = QtWidgets.QVBoxLayout()
+        self.scroll_hour_layout = QtWidgets.QVBoxLayout()
+
+        self.scroll_day_layout.addWidget(self.tableWidget_day)
+        self.scroll_hour_layout.addWidget(self.tableWidget_hour)
+        #self.scroll_day_layout.addStretch(1)
+        #self.scroll_hour_layout.addStretch(1)
+        self.scroll_day = QtWidgets.QScrollArea()
+        self.scroll_hour = QtWidgets.QScrollArea()
+        self.scroll_day.setLayout(self.scroll_day_layout)
+        self.scroll_hour.setLayout(self.scroll_hour_layout)
+        self.mid_layout.addWidget(QtWidgets.QLabel('<center><b>日空值</b></center>'),0,0,1,4)
+        self.mid_layout.addWidget(QtWidgets.QLabel('<center><b>小时空值</b></center>'),0,4,1,6)
+        self.mid_layout.addWidget(self.scroll_day,1,0,10,4)
+        self.mid_layout.addWidget(self.scroll_hour,1,4,10,6)
 
 
         self.bottom_buttun1 = QtWidgets.QPushButton('继续')
         self.bottom_buttun2 = QtWidgets.QPushButton('退出')
-        self.bottom_layout.addWidget(QtWidgets.QLabel(''),    5,    0,    1,  blank+1)
-        self.bottom_layout.addWidget(self.bottom_buttun1,     5,    blank+1,    1,  1)
-        self.bottom_layout.addWidget(self.bottom_buttun2,     5,    blank+2,    1,  1)
+        self.bottom_layout.addStretch(1)
+        self.bottom_layout.addWidget(self.bottom_buttun1)
+        self.bottom_layout.addWidget(self.bottom_buttun2)
         self.bottom_buttun1.clicked.connect(self.close)
         self.bottom_buttun2.clicked.connect(sys.exit)
 
@@ -397,7 +441,7 @@ class pltWindow(QtWidgets.QMainWindow):
     # 绘图方法
     def plot_(self):
         self.inputchecker = drawer.inputChecker()
-        self.inputchecker.set_data(self.xlsxprocessor,self.csvprocessor)
+        self.inputchecker.set_data(self.xlsxprocessor) #,self.csvprocessor)
         self.fig = self.inputchecker.get_figure()
         cavans = FigureCanvas(self.fig)
         # 将绘制好的图像设置为中心 Widget
@@ -405,7 +449,7 @@ class pltWindow(QtWidgets.QMainWindow):
         self.bottom_layout.addWidget(cavans,0,0,5,blank+3)
 
     def get_num_null(self,traffic):
-        num_null = traffic.isnull().sum(axis = 0)
+        num_null = traffic.isnull().sum(axis = 1)
         return num_null
 
     def close_(self):
@@ -437,12 +481,14 @@ class pltWindow(QtWidgets.QMainWindow):
 
 class dateChooser(QtWidgets.QMainWindow):
 
-    dates =[]
+    dates =['2018-12-01','2018-12-02']
     dates_chosen = []
+    hints = ['请选择起始时间', '请选择结束时间']
+    status = 0
 
-    def __init__(self,xlsxprocessor):
+    def __init__(self,dates):
 
-        self.dates =xlsxprocessor.dates
+        self.dates =dates
 
         app = QtWidgets.QApplication(sys.argv)
         super().__init__()
@@ -490,8 +536,9 @@ class dateChooser(QtWidgets.QMainWindow):
                                             border-top:1px solid darkGray;
                                             border-left:1px solid darkGray;
                                             border-right:1px solid darkGray;
-                                            border-top-left-radius:10px;
-                                            border-top-right-radius:10px;
+                                            border-bottom:1px solid darkGray;
+                                            border-bottom-left-radius:10px;
+                                            border-bottom-right-radius:10px;
                                         }
                                     ''')
 
@@ -529,7 +576,7 @@ class dateChooser(QtWidgets.QMainWindow):
         self.top_layout.addWidget(self.top_close,       0,  blank+2,    1,  1)
         self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  blank+3)
 
-        self.topFiller = QtWidgets.QWidget()
+        '''self.topFiller = QtWidgets.QWidget()
         self.topFiller.setMinimumSize(250, 2000)#######设置滚动条的尺寸
         self.scroll_layout = QtWidgets.QVBoxLayout() 
         self.topFiller.setLayout(self.scroll_layout)
@@ -539,22 +586,41 @@ class dateChooser(QtWidgets.QMainWindow):
             self.scroll_layout.addWidget(check)
         self.scroll_layout.addStretch(1)
         self.scroll = QtWidgets.QScrollArea()
-        self.scroll.setWidget(self.topFiller)
+        self.scroll.setWidget(self.topFiller)'''
+        self.lbl = QtWidgets.QLabel(self.hints[self.status])
+        self.lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.lbl.setFont(QtGui.QFont("黑体",20,QtGui.QFont.Bold))
+
+        self.cal = QtWidgets.QCalendarWidget()
+        self.cal.setMinimumDate(datetime.strptime((self.dates[0]),'%Y-%m-%d'))
+        self.cal.setMaximumDate(datetime.strptime((self.dates[-1]),'%Y-%m-%d'))
+        self.cal.setSelectionMode(QtWidgets.QCalendarWidget.SingleSelection)
+        self.cal.setVerticalHeaderFormat(QtWidgets.QCalendarWidget.NoVerticalHeader)
 
         self.bottom_buttun1 = QtWidgets.QPushButton('继续')
         self.bottom_buttun2 = QtWidgets.QPushButton('退出')
 
-        self.bottom_layout.addWidget(self.scroll,0,0,5,blank+3)
-        self.bottom_layout.addWidget(QtWidgets.QLabel(''),    5,    0,    1,  blank+1)
-        self.bottom_layout.addWidget(self.bottom_buttun1,     5,    blank+1,    1,  1)
-        self.bottom_layout.addWidget(self.bottom_buttun2,     5,    blank+2,    1,  1)
+        self.bottom_layout.addWidget(self.lbl,                  0,    0,          1,      blank+3)
+        self.bottom_layout.addWidget(self.cal,                  1,    0,          4,      blank+3)
+        self.bottom_layout.addWidget(QtWidgets.QLabel(''),      5,    0,          1,      blank+1)
+        self.bottom_layout.addWidget(self.bottom_buttun1,       5,    blank+1,    1,        1)
+        self.bottom_layout.addWidget(self.bottom_buttun2,       5,    blank+2,    1,        1)
         self.bottom_buttun1.clicked.connect(self.continue_)
         self.bottom_buttun2.clicked.connect(sys.exit)
     
     def continue_(self):
-        self.dates_chosen = [date for date, datecheck in zip(self.dates, self.datechecks) if datecheck.isChecked()]
-        print(self.dates_chosen)
-        self.close()
+
+        self.dates_chosen.append(self.cal.selectedDate().toString('yyyy-MM-dd'))
+        #self.dates_chosen = [date for date, datecheck in zip(self.dates, self.datechecks) if datecheck.isChecked()]
+        self.status += 1
+        if self.status >1:
+            print('选择日期：',self.dates_chosen)
+            self.close()
+        else:
+            self.flash()
+
+    def flash(self):
+        self.lbl.setText(self.hints[self.status])
 
     def mousePressEvent(self, event):
         if event.button()==QtCore.Qt.LeftButton:
@@ -579,5 +645,8 @@ if __name__ == '__main__':
     print(filechooser.date)
 '''
     #pltwindow = pltWindow('a','bi')
-    datechooser = dateChooser(['a','bi'])
+    #datechooser = dateChooser(['2018-12-01','2018-12-02'])
+    df = pd.DataFrame([[1904,np.nan,1408],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506]], columns = ['a','b', 'c'], index = ['2018-12-01','2018-12-02','2018-12-03','2018-12-04','2018-12-05','2018-12-06'] )
+    print(df)
+    inputchecker = inputChecker(df,df)
     print('stop')

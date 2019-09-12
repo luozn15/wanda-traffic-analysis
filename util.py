@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-def connect_name_boundary(csvprocessor, xlsxprocessor):
-    csv = csvprocessor.csv
+def connect_name_boundary(dxfprocessor_2, xlsxprocessor):
+    csv = dxfprocessor_2.get_DF()
     dict_store_name_id = xlsxprocessor.dict_store_name_id
 
     dict_store_id_name={}
