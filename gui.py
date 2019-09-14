@@ -261,11 +261,6 @@ class fileChooser(QtWidgets.QMainWindow):
     def mouseReleaseEvent(self, QMouseEvent):
         self.m_flag=False
 
-
-
-
-
-
 class inputChecker(QtWidgets.QMainWindow):
     csvprocessor =''
     xlsxprocessor =''
@@ -471,13 +466,6 @@ class inputChecker(QtWidgets.QMainWindow):
             
     def mouseReleaseEvent(self, QMouseEvent):
         self.m_flag=False
-    
-
-
-
-
-
-
 
 class dateChooser(QtWidgets.QMainWindow):
 
@@ -645,10 +633,12 @@ class indicatorInput(QtWidgets.QMainWindow):
     #hints = ['请选择起始时间', '请选择结束时间']
     inds_name = ['总租赁建筑面积（平米）', ' 停车位数（个）']
     inds = [5000,200]
+    area_mainstore = []
     path = './'
 
-    def __init__(self):
+    def __init__(self,mainstore):
         self.path = sys.path[0]+'\inds.csv'
+        self.mainstore = mainstore
         print(self.path)
         
         app = QtWidgets.QApplication(sys.argv)
@@ -738,10 +728,10 @@ class indicatorInput(QtWidgets.QMainWindow):
         self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  blank+3)
 
         self.tableWidget = QtWidgets.QTableWidget()
-        self.tableWidget.setRowCount(len(self.inds_name))
+        self.tableWidget.setRowCount(len(self.inds_name)+len(self.mainstore)+1)
         self.tableWidget.setColumnCount(1)
         self.tableWidget.setHorizontalHeaderLabels(['指标'])
-        self.tableWidget.setVerticalHeaderLabels(self.inds_name)
+        self.tableWidget.setVerticalHeaderLabels(self.inds_name + [''] +[name + ' 面积(平米)' for _, name in self.mainstore])
 
         self.browser = QtWidgets.QPushButton('选择')
         self.browser.clicked.connect(self.popFileDialog)
@@ -777,7 +767,14 @@ class indicatorInput(QtWidgets.QMainWindow):
                 print(self.tableWidget.item(i,0).text())
             except:
                 continue
-        
+
+        for i in range(len(self.mainstore)):
+            try:
+                self.area_mainstore.append(float(self.tableWidget.item(i+len(self.inds_name)+1,0).text()))
+                #print(float(self.tableWidget.item(i,0).text()))
+            except:
+                continue
+        self.path = self.file_input.text()
         self.close()
 
     def mousePressEvent(self, event):
@@ -795,6 +792,8 @@ class indicatorInput(QtWidgets.QMainWindow):
     def mouseReleaseEvent(self, QMouseEvent):
         self.m_flag=False
 
+
+
 if __name__ == '__main__':
     print('start')
     '''filechooser = fileChooser()
@@ -809,4 +808,5 @@ if __name__ == '__main__':
     inputchecker = inputChecker(df,df)
     print('stop')
 '''
-    indicatorinput = indicatorInput()
+    indicatorinput = indicatorInput(['fdsa','fda'])
+    print(indicatorinput.area_mainstore)

@@ -35,11 +35,12 @@ if __name__ =='__main__':
 
     #输入指标
     print('GUI_indicatorinput start')
-    indicatorinput = gui.indicatorInput()
+    indicatorinput = gui.indicatorInput(xlsx_processor.mainstore)
     print('GUI_indicatorinput stop')
 
-    indicators=indicators.Indicators(xlsx_processor, indicatorinput.inds, duration)
+    indicators=indicators.Indicators(xlsx_processor, indicatorinput.inds,indicatorinput.area_mainstore, duration)
     indicators.write(indicatorinput.path)
+    os.startfile(indicatorinput.path)
 
     '''for date in datechooser.dates_chosen:
         print('main draw'+date)

@@ -8,6 +8,8 @@ class xlsxProcessor():
     traffic_hour = []
     dict_store_name_id ={}
     dict_store_id_name ={}
+    mainstore = []
+    
 
     def __init__(self,xlsx):
         print('xlsxProcessor inited:')
@@ -21,6 +23,7 @@ class xlsxProcessor():
         #print(self.traffic_day.head(5),self.traffic_hour.head(5))
 
         self.dates = [str(ts.date()) for ts in list(self.traffic_day.index)]
+        self.mainstore = self.get_mainstore()
         print('xlsxProcessor finished:')
 
     def read_traffic_pathway_day(self):
@@ -80,6 +83,9 @@ class xlsxProcessor():
         traffic_hour.columns = [level,name]
 
         return traffic_hour
+    
+    def get_mainstore(self):
+        return list(set([(id_.split('-')[0].split('F')[0],name) for id_, name  in self.dict_store_id_name.items() if ('-' in id_)]))
 
 if __name__=='__main__':
     xlsxprocessor = xlsxProcessor('C:/Users/LuoZN/Desktop/客流数据/【客流+车场数据】0813.xlsx')
