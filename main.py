@@ -30,14 +30,20 @@ if __name__ =='__main__':
 
     print('GUI_datechooser start')
     datechooser = gui.dateChooser(xlsx_processor.dates)
+    duration = (datechooser.dates_chosen[0], datechooser.dates_chosen[-1])
     print('GUI_datechooser stop')
 
-    indicators=indicators.Indicators(xlsx_processor)
-    indicators.write('./test.csv')
+    #输入指标
+    print('GUI_indicatorinput start')
+    indicatorinput = gui.indicatorInput()
+    print('GUI_indicatorinput stop')
+
+    indicators=indicators.Indicators(xlsx_processor, indicatorinput.inds, duration)
+    indicators.write(indicatorinput.path)
 
     '''for date in datechooser.dates_chosen:
         print('main draw'+date)
         draw(xlsx_processor,dxf_processor,dxf_processor_2,date)'''
-    duration = (datechooser.dates_chosen[0], datechooser.dates_chosen[-1])
+    
     draw(xlsx_processor,dxf_processor,dxf_processor_2,duration)
 

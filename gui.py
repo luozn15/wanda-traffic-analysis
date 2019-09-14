@@ -637,6 +637,164 @@ class dateChooser(QtWidgets.QMainWindow):
     def mouseReleaseEvent(self, QMouseEvent):
         self.m_flag=False
     
+
+class indicatorInput(QtWidgets.QMainWindow):
+
+    area = 0
+    num_parking = 0
+    #hints = ['请选择起始时间', '请选择结束时间']
+    inds_name = ['总租赁建筑面积（平米）', ' 停车位数（个）']
+    inds = [5000,200]
+    path = './'
+
+    def __init__(self):
+        self.path = sys.path[0]+'\inds.csv'
+        print(self.path)
+        
+        app = QtWidgets.QApplication(sys.argv)
+        super().__init__()
+        self.initUI()
+        self.show()
+        app.exec_()
+
+    def initUI(self):
+
+        self.setFixedSize(400,800)
+        self.move(300, 300)
+        self.setWindowTitle('输入指标')
+
+        self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
+        self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
+        self.main_widget.setLayout(self.main_layout)  # 设置窗口主部件布局为网格布局
+        self.setObjectName('main_widget')
+        
+
+
+        self.top_widget = QtWidgets.QWidget()  # 创建上侧部件
+        self.top_widget.setObjectName('top_widget')
+        self.top_layout = QtWidgets.QGridLayout()  # 创建上侧部件的网格布局层
+        self.top_widget.setLayout(self.top_layout) # 设置上侧部件布局为网格
+        self.top_widget.setStyleSheet('''
+                                        QWidget#top_widget{
+                                            color:#333333;
+                                            background:#fafafa;
+                                            border-top:1px solid darkGray;
+                                            border-left:1px solid darkGray;
+                                            border-right:1px solid darkGray;
+                                            border-top-left-radius:10px;
+                                            border-top-right-radius:10px;
+                                        }
+                                    ''')
+
+        self.bottom_widget = QtWidgets.QWidget()  # 创建上侧部件
+        self.bottom_widget.setObjectName('bottom_widget')
+        self.bottom_layout = QtWidgets.QGridLayout()  # 创建上侧部件的网格布局层
+        self.bottom_widget.setLayout(self.bottom_layout) # 设置上侧部件布局为网格
+        self.bottom_widget.setStyleSheet('''
+                                        QWidget#bottom_widget{
+                                            color:#333333;
+                                            background:#fafafa;
+                                            border-top:1px solid darkGray;
+                                            border-left:1px solid darkGray;
+                                            border-right:1px solid darkGray;
+                                            border-bottom:1px solid darkGray;
+                                            border-bottom-left-radius:10px;
+                                            border-bottom-right-radius:10px;
+                                        }
+                                    ''')
+
+        
+        self.main_layout.addWidget(self.top_widget,     0,0,2,12) 
+        self.main_layout.addWidget(self.bottom_widget,     2,0,10,12) 
+        self.main_layout.setSpacing(0)
+        self.setCentralWidget(self.main_widget) # 设置窗口主部件
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        self.setWindowOpacity(0.99) # 设置窗口透明度
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground) # 设置窗口背景透明
+
+        # top
+        self.top_label_1 = QtWidgets.QLabel('客流分析')
+        self.top_label_1.setFont(QtGui.QFont("黑体",20,QtGui.QFont.Bold))
+        self.top_label_2 = QtWidgets.QLabel('版本  1')
+        self.top_label_2.setFont(QtGui.QFont("黑体",15,QtGui.QFont.Normal))
+        self.top_mini = QtWidgets.QPushButton("")  # 最小化按钮
+        self.top_visit = QtWidgets.QPushButton("") # 空白按钮
+        self.top_close = QtWidgets.QPushButton("") # 关闭按钮
+        self.top_mini.setFixedSize(15, 15) # 设置最小化按钮大小
+        self.top_visit.setFixedSize(15, 15)  # 设置按钮大小
+        self.top_close.setFixedSize(15,15)
+        self.top_mini.setStyleSheet('''QPushButton{background:#6DDF6D;border-radius:5px;}QPushButton:hover{background:green;}''')
+        self.top_visit.setStyleSheet('''QPushButton{background:#F7D674;border-radius:5px;}QPushButton:hover{background:yellow;}''')
+        self.top_close.setStyleSheet('''QPushButton{background:#F76677;border-radius:5px;}QPushButton:hover{background:red;}''')
+        self.top_mini.clicked.connect(self.showMinimized)
+        self.top_visit.clicked.connect(self.showNormal)
+        self.top_close.clicked.connect(sys.exit)
+        blank = 15
+        self.top_layout.addWidget(self.top_label_1,     0,  0,          1,  blank)
+        self.top_layout.addWidget(self.top_label_2,     1,  0,          1,  blank)
+        self.top_layout.addWidget(self.top_mini,        0,  blank,      1,  1)
+        self.top_layout.addWidget(self.top_visit,       0,  blank+1,    1,  1)
+        self.top_layout.addWidget(self.top_close,       0,  blank+2,    1,  1)
+        self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  blank+3)
+
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setRowCount(len(self.inds_name))
+        self.tableWidget.setColumnCount(1)
+        self.tableWidget.setHorizontalHeaderLabels(['指标'])
+        self.tableWidget.setVerticalHeaderLabels(self.inds_name)
+
+        self.browser = QtWidgets.QPushButton('选择')
+        self.browser.clicked.connect(self.popFileDialog)
+        self.file_input = QtWidgets.QLineEdit()
+        self.file_input.setText(self.path)
+
+        self.bottom_buttun1 = QtWidgets.QPushButton('继续')
+        self.bottom_buttun2 = QtWidgets.QPushButton('退出')
+
+        self.bottom_layout.addWidget(self.tableWidget,          0,    0,          5,      blank+3)
+        self.bottom_layout.addWidget(self.file_input,           5,    0,          1,      blank+2)
+        self.bottom_layout.addWidget(self.browser,              5,    blank+2,    1,        1)
+        self.bottom_layout.addWidget(QtWidgets.QLabel(''),      6,    0,          1,      blank+1)
+        self.bottom_layout.addWidget(self.bottom_buttun1,       6,    blank+1,    1,        1)
+        self.bottom_layout.addWidget(self.bottom_buttun2,       6,    blank+2,    1,        1)
+        self.bottom_buttun1.clicked.connect(self.continue_)
+        self.bottom_buttun2.clicked.connect(sys.exit)
+    
+    def popFileDialog(self):     
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, '选择保存位置', self.path, "分隔符格式 (*.csv)")[0]
+        #print(filename)
+        self.path = filename# if self.status_id < 2 and len(filename)==1 else filename
+        print(self.path)
+
+        self.file_input.setText(self.path)
+    
+
+    def continue_(self):
+        
+        for i in range(len(self.inds_name)):
+            try:
+                self.inds[i] = self.tableWidget.item(i,0).text()
+                print(self.tableWidget.item(i,0).text())
+            except:
+                continue
+        
+        self.close()
+
+    def mousePressEvent(self, event):
+        if event.button()==QtCore.Qt.LeftButton:
+            self.m_flag=True
+            self.m_Position=event.globalPos()-self.pos() #获取鼠标相对窗口的位置
+            event.accept()
+            #self.setCursor(QtCore.QCursor(QtCore.Qt.OpenHandCursor))  #更改鼠标图标
+
+    def mouseMoveEvent(self, QMouseEvent):
+        if QtCore.Qt.LeftButton and self.m_flag:  
+            self.move(QMouseEvent.globalPos()-self.m_Position)#更改窗口位置
+            QMouseEvent.accept()
+            
+    def mouseReleaseEvent(self, QMouseEvent):
+        self.m_flag=False
+
 if __name__ == '__main__':
     print('start')
     '''filechooser = fileChooser()
@@ -646,7 +804,9 @@ if __name__ == '__main__':
 '''
     #pltwindow = pltWindow('a','bi')
     #datechooser = dateChooser(['2018-12-01','2018-12-02'])
-    df = pd.DataFrame([[1904,np.nan,1408],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506]], columns = ['a','b', 'c'], index = ['2018-12-01','2018-12-02','2018-12-03','2018-12-04','2018-12-05','2018-12-06'] )
+    '''df = pd.DataFrame([[1904,np.nan,1408],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506]], columns = ['a','b', 'c'], index = ['2018-12-01','2018-12-02','2018-12-03','2018-12-04','2018-12-05','2018-12-06'] )
     print(df)
     inputchecker = inputChecker(df,df)
     print('stop')
+'''
+    indicatorinput = indicatorInput()

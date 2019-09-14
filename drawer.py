@@ -86,11 +86,12 @@ class heatDrawer():
 
         #热度填充
         self.df_store_heat = self.get_df_store_heat()
-        begin,end = self.duration
+        '''begin,end = self.duration
         begin = pd.to_datetime(begin)
         end = pd.to_datetime(end)
         days =int((end-begin)//datetime.timedelta(1))
-        dates = [begin + datetime.timedelta(1)*i for i in range(days+1)]
+        dates = [begin + datetime.timedelta(1)*i for i in range(days+1)]'''
+        dates = util.get_dates_within_duration(self.duration)
 
         self.heat = self.df_store_heat[dates].sum(axis = 1)
 

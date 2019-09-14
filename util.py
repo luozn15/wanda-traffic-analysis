@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import datetime
 
 def connect_name_boundary(dxfprocessor_2, xlsxprocessor):
     csv = dxfprocessor_2.get_DF()
@@ -46,3 +47,14 @@ def get_center(boundary):
         xs+=x
         ys+=y
     return (xs/len(boundary),ys/len(boundary))
+
+def get_dates_within_duration(duration):
+    begin,end = duration
+    begin = pd.to_datetime(begin)
+    end = pd.to_datetime(end)
+    days =int((end-begin)//datetime.timedelta(1))
+    dates = [begin + datetime.timedelta(1)*i for i in range(days+1)]
+    return dates
+
+if __name__ == '__main__':
+    print(get_dates_within_duration(('2018-12-01','2019-01-02')))
