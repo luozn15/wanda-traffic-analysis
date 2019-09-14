@@ -1,4 +1,5 @@
 import math
+import datetime
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -13,7 +14,7 @@ import util
 
 class heatDrawer():
     path = ''
-    date = ''
+    duration = ''
 
     line = ''
     arc = ''
@@ -22,7 +23,7 @@ class heatDrawer():
     xa, xi ,ya, yi =0, 0, 0, 0
 
     dxfprocessor =''
-    csvprocessor =''
+    dxfprocessor_2 =''
     xlsxprocessor =''
     df_store_heat = ''
     heat = ''
@@ -31,14 +32,14 @@ class heatDrawer():
         print('draw init')
         self.path = path
 
-    def set_data(self,xlsxprocessor,dxfprocessor,csvprocessor,date):
+    def set_data(self,xlsxprocessor,dxfprocessor,dxfprocessor_2,duration):
         self.dxfprocessor = dxfprocessor
-        self.csvprocessor =csvprocessor
+        self.dxfprocessor_2 = dxfprocessor_2
         self.xlsxprocessor =xlsxprocessor
-        self.date = date
-
+        self.duration = duration
+        #date
     def get_df_store_heat(self):
-        df_name_boundary = util.connect_name_boundary(self.csvprocessor,self.xlsxprocessor)
+        df_name_boundary = util.connect_name_boundary(self.dxfprocessor_2,self.xlsxprocessor)
         df_store_heat = util.connect_store_traffic(df_name_boundary,self.xlsxprocessor)
         return df_store_heat
 
@@ -85,17 +86,24 @@ class heatDrawer():
 
         #热度填充
         self.df_store_heat = self.get_df_store_heat()
-        date = self.date
-        self.heat = self.df_store_heat[pd.to_datetime(date)]
+        '''begin,end = self.duration
+        begin = pd.to_datetime(begin)
+        end = pd.to_datetime(end)
+        days =int((end-begin)//datetime.timedelta(1))
+        dates = [begin + datetime.timedelta(1)*i for i in range(days+1)]'''
+        dates = util.get_dates_within_duration(self.duration)
+
+        self.heat = self.df_store_heat[dates].sum(axis = 1)
 
         boundaries = list(self.df_store_heat['boundary'])
         names = list(self.df_store_heat['name'])
         patches =[]
-        for boundary ,name in zip(boundaries,names):
+        for boundary ,name, heat in zip(boundaries,names,self.heat):
+            text = name + '\n' + str(int(heat))
             center = util.get_center(boundary)
             polygon = Polygon(np.array(boundary), True)
             patches.append(polygon)
-            plt.text(center[0],center[1],name)
+            plt.text(center[0], center[1], text, ha='center',va='center')
         p = PatchCollection(patches, cmap = plt.get_cmap('rainbow') ,alpha=0.4)
         p.set_array(np.array(self.heat))
         p.set_clim([0,max(list(self.heat))])
@@ -106,22 +114,22 @@ class heatDrawer():
 
         # 展示
         plt.plot()
-        plt.savefig(self.path + '/heat'+self.date+'.jpg',dpi = 100)
+        plt.savefig(self.path + '/heat'+str(self.duration[0]) + '-' + str(self.duration[-1]) +'.jpg',dpi = 100)
         
         #plt.show()
-        print('保存为 '+self.path + '/heat'+self.date+'.jpg')
-        return self.path + '/heat'+self.date+'.jpg'
+        print('保存为 '+self.path + '/heat'+str(self.duration[0]) + '-' + str(self.duration[-1])+'.jpg')
+        return self.path + '/heat'+str(self.duration[0]) + '-' + str(self.duration[-1])+'.jpg'
 
 class inputChecker():
 
-    csvprocessor =''
+    #csvprocessor =''
     xlsxprocessor =''
 
     def __init__(self):
         pass
 
-    def set_data(self,xlsxprocessor,csvprocessor):
-        self.csvprocessor = csvprocessor
+    def set_data(self,xlsxprocessor):#,csvprocessor):
+        #self.csvprocessor = csvprocessor
         self.xlsxprocessor =xlsxprocessor
 
     def get_num_null(self,traffic):
