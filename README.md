@@ -1,16 +1,16 @@
 # Wanda 客流小程序
 本程序使用 *python3.7* 开发，打包为可执行文件格式，双击运行
 
-## 功能
+### 功能
 计算商场在时段内的技术指标，绘制商铺的热力图
-## 输入
+### 输入
 - **客流数据.xlsx**，格式如 **模板.xlsx** ，含四个sheet：<p>      ---出入口及通道日客流数</p><p>      ---店铺日客流量</p><p>      ---出入口及通道日客流量</p><p>      ---分时段客流数</p> 
 - **商场平面.dxf**，DXF文件由DWG文件通过AutoCAD导出，版本不限，原始DWG文件参考 **模板.dwg** ，包含两个独立图层：<p>      ---ID，包含店铺序号的文本，位置靠近在店铺轮廓中心</p><p>      ---Bounds，包含店铺轮廓，全为Polyline，弧线也用polyline拟合</p>
 - 部分需要输入的指标，包括：<p>---商场总建筑面积</p><p>---停车位数</p><p>---各主力店面积</p>
-## 输出
+### 输出
 - *inds.csv* 文件，包含各种计算获得的技术指标
-- *heat xxxx-xx-xx to xxxx-xx-xx.jpg* 文件，所选时段内的商铺热力图
-## 使用流程
+- *heatxxxx-xx-xxtoxxxx-xx-xx.jpg* 文件，所选时段内的商铺热力图
+### 使用流程
 1. **双击** 客流小程序.exe
 2. **选择** 客流数据.xlsx，确认
 3. **选择** 商场平面图.dxf，确认
@@ -21,20 +21,20 @@
 8. **选择** 计算完成的指标的保存位置
 9. 指标计算完成自动打开csv文件
 10. 店铺热力图绘制完成自动打开jpg文件
-## 下载
+### 下载
 下载地址  
 - Windows版 [客流小程序](https://cloud.tsinghua.edu.cn/f/adfddf0ce35a41c1a2a9/?dl=1)，最后更新： 2019-09-15
 
 - Macintosh版 [客流小程序](https://cloud.tsinghua.edu.cn/f/adfddf0ce35a41c1a2a0/?dl=1)，最后更新： 调试中，即将上线
 
-## 依赖
+### 依赖
 执行源码时，依赖python库 *dxfgrabber*, *pyqt5*
 ```bash
 pip install dxfgrabber
 pip install pyqt5
 ```
 
-## 开发者
+### 开发者
 @luozn15 罗子牛
 @datatraveler-01 熊鑫昌
 
