@@ -13,9 +13,9 @@ class fileChooser(QtWidgets.QMainWindow):
     name_file = ['/'.join(sys.path[0].split('\\')[:-1]), '/'.join(sys.path[0].split('\\')[:-1]),'/'.join(sys.path[0].split('\\')[:-1])]#xlsx,dxf,csv
     date = ''
     file_type = ['Excel File (*.xlsx)','DXF File(*.dxf)']#,'CSV File (*.csv)']
-    status_list = ["选择xlsx文件","选择dxf文件"]#,"选择csv文件"]
-    instructions =  ["<h2>xlsx文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2. 选取包含客流信息的.xlsx文件</p> <p>3. 点击右下“确认”按钮</p>",
-                    "<h2>dxf文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2.选取由dwg格式的平面图纸另存的.dxf文件（不限版本）</p> <p>3. 点击右下“确认”按钮</p>",
+    status_list = ["选择Excel文件","选择DXF文件",'空值检查', '选择时间段', '输入指标']
+    instructions =  ["<h2>Excel文件说明</h2> <p><b>1.</b> 点击右下“选择”按钮</p> <p><b>2.</b> 选取包含客流信息的Excel文件</p> <p><b>3.</b> Excel文件格式参考 <b>模板.xlsx</b> ,含四个sheet：</p><p>      <b>---出入口及通道日客流数</b></p><p>      <b>---店铺日客流量</b></p><p>      <b>---出入口及通道日客流量</b></p><p>      <b>---分时段客流数</b></p> <p><b>4.</b> 点击右下“确认”按钮继续</p>",
+                    "<h2>DXF文件说明</h2> <p><b>1.</b> 点击右下“选择”按钮</p> <p><b>2.</b>选取DXF文件（不限版本）</p> <p><b>3.</b>DXF文件由DWG文件通过AutoCAD导出</p> <p><b>4.</b>原始DWG文件参考<b>模板.dwg</b>，包含两个独立图层：</p><p>      <b>---ID，店铺序号</b></p><p>      <b>---Bounds，店铺轮廓</b></p><p><b>5.</b> 点击右下“确认”按钮</p>",
                     ]
                     #"<h2>csv文件说明</h2> <p>1. 点击右下“选择”按钮</p> <p>2. 选取由autolisp脚本保存的.csv文件（可多选）</p> <p>3. 点击右下“确认”按钮</p>",
                     #"<h2>选择日期说明</h2> <p>1. 格式 yyyy-mm-dd</p> <p>2. 如2018年12月1日为 2018-12-01</p> <p>3. 这里可以写一些说明</p>",
@@ -34,7 +34,10 @@ class fileChooser(QtWidgets.QMainWindow):
     def initUI(self):
         self.setFixedSize(800,500)
         self.move(300, 300)
-        self.setWindowTitle('客流分析')
+        self.setWindowTitle('客流小程序')
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./logo-01.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
         
         self.palette1 = QtGui.QPalette()
         #self.palette1.setColor(self.backgroundRole(), QtGui.QColor(192,253,123,200))   # 设置背景颜色
@@ -120,9 +123,9 @@ class fileChooser(QtWidgets.QMainWindow):
 
 
         # top
-        self.top_label_1 = QtWidgets.QLabel('客流分析')
+        self.top_label_1 = QtWidgets.QLabel('客流小程序')
         self.top_label_1.setFont(QtGui.QFont("黑体",20,QtGui.QFont.Bold))
-        self.top_label_2 = QtWidgets.QLabel('版本  1')
+        self.top_label_2 = QtWidgets.QLabel('版本  2.09.15')
         self.top_label_2.setFont(QtGui.QFont("黑体",15,QtGui.QFont.Normal))
         self.top_mini = QtWidgets.QPushButton("")  # 最小化按钮
         self.top_visit = QtWidgets.QPushButton("") # 空白按钮
@@ -205,7 +208,7 @@ class fileChooser(QtWidgets.QMainWindow):
     
     def confirm(self):
         self.status_id += 1
-        if self.status_id < len(self.status_list): 
+        if self.status_id < 2: 
             self.flash()
         #elif self.status_id == len(self.status_list)-1: self.flash2()
         else : 
@@ -262,6 +265,8 @@ class fileChooser(QtWidgets.QMainWindow):
         self.m_flag=False
 
 class inputChecker(QtWidgets.QMainWindow):
+    status_list = ["选择Excel文件","选择DXF文件",'空值检查', '选择时间段', '输入指标']
+    status_id = 2
     csvprocessor =''
     xlsxprocessor =''
     traffic_day = ''
@@ -281,9 +286,12 @@ class inputChecker(QtWidgets.QMainWindow):
 
     def initUI(self):
 
-        self.setFixedSize(500,800)
+        self.setFixedSize(800,500)
         #self.move(300, 300)
         self.setWindowTitle('空值检查')
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./logo-01.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
 
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
         self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
@@ -307,6 +315,29 @@ class inputChecker(QtWidgets.QMainWindow):
                                             border-top-right-radius:10px;
                                         }
                                     ''')
+        
+        self.left_widget = QtWidgets.QWidget()  # 创建左侧部件
+        self.left_widget.setObjectName('left_widget')
+        self.left_layout = QtWidgets.QVBoxLayout()  # 创建左侧部件的网格布局层
+        self.left_widget.setLayout(self.left_layout) # 设置左侧部件布局为网格
+        self.left_widget.setStyleSheet('''
+                                        QWidget#left_widget{
+                                            color:#232C51;
+                                            background:#eeeeee;
+                                            border-top:1px solid darkGray;
+                                            border-bottom:1px solid darkGray;
+                                            border-left:1px solid darkGray;
+                                            border-bottom-left-radius:10px;
+                                            
+                                        }
+                                        QLabel#left_label{
+                                            border:none;
+                                            border-left:1px solid white;
+                                            font-size:15px;
+                                            font-weight:700;
+                                            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                                        }
+                                    ''')
 
         self.mid_widget = QtWidgets.QWidget()
         self.mid_widget.setObjectName('mid_widget')
@@ -316,6 +347,7 @@ class inputChecker(QtWidgets.QMainWindow):
                                         QWidget#mid_widget{
                                             color:#333333;
                                             background:#fafafa;
+                                            border-top:1px solid darkGray;
                                             border-left:1px solid darkGray;
                                             border-right:1px solid darkGray;
                                         }
@@ -333,15 +365,15 @@ class inputChecker(QtWidgets.QMainWindow):
                                             border-left:1px solid darkGray;
                                             border-right:1px solid darkGray;
                                             border-bottom:1px solid darkGray;
-                                            border-bottom-left-radius:10px;
                                             border-bottom-right-radius:10px;
                                         }
                                     ''')
 
         
-        self.main_layout.addWidget(self.top_widget,     0,0,2,1) 
-        self.main_layout.addWidget(self.mid_widget,     2,0,10,1)
-        self.main_layout.addWidget(self.bottom_widget,     12,0,1,1)  
+        self.main_layout.addWidget(self.top_widget,     0,0,2,12) 
+        self.main_layout.addWidget(self.left_widget,    2,0,8,2) # 左侧部件在第0行第0列，占8行3列
+        self.main_layout.addWidget(self.mid_widget,     2,2,7,10)
+        self.main_layout.addWidget(self.bottom_widget,     9,2,1,10)  
         self.main_layout.setSpacing(0)
         self.setCentralWidget(self.main_widget) # 设置窗口主部件
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
@@ -349,9 +381,9 @@ class inputChecker(QtWidgets.QMainWindow):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground) # 设置窗口背景透明
 
         # top
-        self.top_label_1 = QtWidgets.QLabel('客流分析')
+        self.top_label_1 = QtWidgets.QLabel('客流小程序')
         self.top_label_1.setFont(QtGui.QFont("黑体",20,QtGui.QFont.Bold))
-        self.top_label_2 = QtWidgets.QLabel('版本  1')
+        self.top_label_2 = QtWidgets.QLabel('版本  2.09.15')
         self.top_label_2.setFont(QtGui.QFont("黑体",15,QtGui.QFont.Normal))
         self.top_mini = QtWidgets.QPushButton("")  # 最小化按钮
         self.top_visit = QtWidgets.QPushButton("") # 空白按钮
@@ -372,6 +404,25 @@ class inputChecker(QtWidgets.QMainWindow):
         self.top_layout.addWidget(self.top_visit,       0,  16,    1,  1)
         self.top_layout.addWidget(self.top_close,       0,  17,    1,  1)
         self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  18)
+
+        self.left_label=[]
+        for i in range(len(self.status_list)):
+            self.left_label.append(QtWidgets.QLabel(self.status_list[i]))
+            self.left_label[i].setObjectName('left_label')
+            if i <= self.status_id:
+                self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#ffffff;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
+            else:
+                self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#999999;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
+        
+        self.left_label_5 = QtWidgets.QLabel("<p>copyright © WX_Studio 2019</p>")
+        #self.left_label_5.setObjectName('left_label')
+
+        self.left_layout.addWidget(QtWidgets.QLabel())
+        for i in self.left_label:
+            self.left_layout.addWidget(i)
+        self.left_layout.addStretch(1)
+        self.left_layout.addWidget(self.left_label_5)
+        self.left_layout.setSpacing(20)
 
         '''self.scroll_day = QtWidgets.QWidget()
         self.scroll_day.setMinimumSize(2000, 250)#######设置滚动条的尺寸
@@ -468,6 +519,8 @@ class inputChecker(QtWidgets.QMainWindow):
         self.m_flag=False
 
 class dateChooser(QtWidgets.QMainWindow):
+    status_list = ["选择Excel文件","选择DXF文件",'空值检查', '选择时间段', '输入指标']
+    status_id = 3
 
     dates =['2018-12-01','2018-12-02']
     dates_chosen = []
@@ -486,9 +539,12 @@ class dateChooser(QtWidgets.QMainWindow):
 
     def initUI(self):
 
-        self.setFixedSize(400,800)
+        self.setFixedSize(800,500)
         self.move(300, 300)
         self.setWindowTitle('选择日期')
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./logo-01.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
 
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
         self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
@@ -513,6 +569,29 @@ class dateChooser(QtWidgets.QMainWindow):
                                         }
                                     ''')
 
+        self.left_widget = QtWidgets.QWidget()  # 创建左侧部件
+        self.left_widget.setObjectName('left_widget')
+        self.left_layout = QtWidgets.QVBoxLayout()  # 创建左侧部件的网格布局层
+        self.left_widget.setLayout(self.left_layout) # 设置左侧部件布局为网格
+        self.left_widget.setStyleSheet('''
+                                        QWidget#left_widget{
+                                            color:#232C51;
+                                            background:#eeeeee;
+                                            border-top:1px solid darkGray;
+                                            border-bottom:1px solid darkGray;
+                                            border-left:1px solid darkGray;
+                                            border-bottom-left-radius:10px;
+                                            
+                                        }
+                                        QLabel#left_label{
+                                            border:none;
+                                            border-left:1px solid white;
+                                            font-size:15px;
+                                            font-weight:700;
+                                            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                                        }
+                                    ''')
+
         self.bottom_widget = QtWidgets.QWidget()  # 创建上侧部件
         self.bottom_widget.setObjectName('bottom_widget')
         self.bottom_layout = QtWidgets.QGridLayout()  # 创建上侧部件的网格布局层
@@ -525,14 +604,14 @@ class dateChooser(QtWidgets.QMainWindow):
                                             border-left:1px solid darkGray;
                                             border-right:1px solid darkGray;
                                             border-bottom:1px solid darkGray;
-                                            border-bottom-left-radius:10px;
                                             border-bottom-right-radius:10px;
                                         }
                                     ''')
 
         
         self.main_layout.addWidget(self.top_widget,     0,0,2,12) 
-        self.main_layout.addWidget(self.bottom_widget,     2,0,10,12) 
+        self.main_layout.addWidget(self.left_widget,    2,0,8,3) # 左侧部件在第0行第0列，占8行3列
+        self.main_layout.addWidget(self.bottom_widget,     2,3,8,9) 
         self.main_layout.setSpacing(0)
         self.setCentralWidget(self.main_widget) # 设置窗口主部件
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
@@ -540,9 +619,9 @@ class dateChooser(QtWidgets.QMainWindow):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground) # 设置窗口背景透明
 
         # top
-        self.top_label_1 = QtWidgets.QLabel('客流分析')
+        self.top_label_1 = QtWidgets.QLabel('客流小程序')
         self.top_label_1.setFont(QtGui.QFont("黑体",20,QtGui.QFont.Bold))
-        self.top_label_2 = QtWidgets.QLabel('版本  1')
+        self.top_label_2 = QtWidgets.QLabel('版本  2.09.15')
         self.top_label_2.setFont(QtGui.QFont("黑体",15,QtGui.QFont.Normal))
         self.top_mini = QtWidgets.QPushButton("")  # 最小化按钮
         self.top_visit = QtWidgets.QPushButton("") # 空白按钮
@@ -563,6 +642,26 @@ class dateChooser(QtWidgets.QMainWindow):
         self.top_layout.addWidget(self.top_visit,       0,  blank+1,    1,  1)
         self.top_layout.addWidget(self.top_close,       0,  blank+2,    1,  1)
         self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  blank+3)
+
+        #left
+        self.left_label=[]
+        for i in range(len(self.status_list)):
+            self.left_label.append(QtWidgets.QLabel(self.status_list[i]))
+            self.left_label[i].setObjectName('left_label')
+            if i <= self.status_id:
+                self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#ffffff;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
+            else:
+                self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#999999;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
+        
+        self.left_label_5 = QtWidgets.QLabel("<p>copyright © WX_Studio 2019</p>")
+        #self.left_label_5.setObjectName('left_label')
+
+        self.left_layout.addWidget(QtWidgets.QLabel())
+        for i in self.left_label:
+            self.left_layout.addWidget(i)
+        self.left_layout.addStretch(1)
+        self.left_layout.addWidget(self.left_label_5)
+        self.left_layout.setSpacing(20)
 
         '''self.topFiller = QtWidgets.QWidget()
         self.topFiller.setMinimumSize(250, 2000)#######设置滚动条的尺寸
@@ -627,6 +726,8 @@ class dateChooser(QtWidgets.QMainWindow):
     
 
 class indicatorInput(QtWidgets.QMainWindow):
+    status_list = ["选择Excel文件","选择DXF文件",'空值检查', '选择时间段', '输入指标']
+    status_id = 4
 
     area = 0
     num_parking = 0
@@ -637,7 +738,7 @@ class indicatorInput(QtWidgets.QMainWindow):
     path = './'
 
     def __init__(self,mainstore):
-        self.path = sys.path[0]+'\inds.csv'
+        self.path = sys.path[0]+'/inds.csv'
         self.mainstore = mainstore
         print(self.path)
         
@@ -649,9 +750,12 @@ class indicatorInput(QtWidgets.QMainWindow):
 
     def initUI(self):
 
-        self.setFixedSize(400,800)
+        self.setFixedSize(800,500)
         self.move(300, 300)
         self.setWindowTitle('输入指标')
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./logo-01.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
 
         self.main_widget = QtWidgets.QWidget()  # 创建窗口主部件
         self.main_layout = QtWidgets.QGridLayout()  # 创建主部件的网格布局
@@ -676,6 +780,29 @@ class indicatorInput(QtWidgets.QMainWindow):
                                         }
                                     ''')
 
+        self.left_widget = QtWidgets.QWidget()  # 创建左侧部件
+        self.left_widget.setObjectName('left_widget')
+        self.left_layout = QtWidgets.QVBoxLayout()  # 创建左侧部件的网格布局层
+        self.left_widget.setLayout(self.left_layout) # 设置左侧部件布局为网格
+        self.left_widget.setStyleSheet('''
+                                        QWidget#left_widget{
+                                            color:#232C51;
+                                            background:#eeeeee;
+                                            border-top:1px solid darkGray;
+                                            border-bottom:1px solid darkGray;
+                                            border-left:1px solid darkGray;
+                                            border-bottom-left-radius:10px;
+                                            
+                                        }
+                                        QLabel#left_label{
+                                            border:none;
+                                            border-left:1px solid white;
+                                            font-size:15px;
+                                            font-weight:700;
+                                            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                                        }
+                                    ''')
+
         self.bottom_widget = QtWidgets.QWidget()  # 创建上侧部件
         self.bottom_widget.setObjectName('bottom_widget')
         self.bottom_layout = QtWidgets.QGridLayout()  # 创建上侧部件的网格布局层
@@ -688,14 +815,14 @@ class indicatorInput(QtWidgets.QMainWindow):
                                             border-left:1px solid darkGray;
                                             border-right:1px solid darkGray;
                                             border-bottom:1px solid darkGray;
-                                            border-bottom-left-radius:10px;
                                             border-bottom-right-radius:10px;
                                         }
                                     ''')
 
         
         self.main_layout.addWidget(self.top_widget,     0,0,2,12) 
-        self.main_layout.addWidget(self.bottom_widget,     2,0,10,12) 
+        self.main_layout.addWidget(self.left_widget,    2,0,8,3) # 左侧部件在第0行第0列，占8行3列
+        self.main_layout.addWidget(self.bottom_widget,     2,3,8,9) 
         self.main_layout.setSpacing(0)
         self.setCentralWidget(self.main_widget) # 设置窗口主部件
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
@@ -703,9 +830,9 @@ class indicatorInput(QtWidgets.QMainWindow):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground) # 设置窗口背景透明
 
         # top
-        self.top_label_1 = QtWidgets.QLabel('客流分析')
+        self.top_label_1 = QtWidgets.QLabel('客流小程序')
         self.top_label_1.setFont(QtGui.QFont("黑体",20,QtGui.QFont.Bold))
-        self.top_label_2 = QtWidgets.QLabel('版本  1')
+        self.top_label_2 = QtWidgets.QLabel('版本  2.09.15')
         self.top_label_2.setFont(QtGui.QFont("黑体",15,QtGui.QFont.Normal))
         self.top_mini = QtWidgets.QPushButton("")  # 最小化按钮
         self.top_visit = QtWidgets.QPushButton("") # 空白按钮
@@ -727,6 +854,26 @@ class indicatorInput(QtWidgets.QMainWindow):
         self.top_layout.addWidget(self.top_close,       0,  blank+2,    1,  1)
         self.top_layout.addWidget(QtWidgets.QLabel(''), 1,  0,          1,  blank+3)
 
+        #left
+        self.left_label=[]
+        for i in range(len(self.status_list)):
+            self.left_label.append(QtWidgets.QLabel(self.status_list[i]))#√-·
+            self.left_label[i].setObjectName('left_label')
+            if i <= self.status_id:
+                self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#ffffff;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
+            else:
+                self.left_label[i].setStyleSheet("border:none;border-left:1px solid white;color:#999999;font-size:15px;font-weight:700;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;")
+        
+        self.left_label_5 = QtWidgets.QLabel("<p>copyright © WX_Studio 2019</p>")
+        #self.left_label_5.setObjectName('left_label')
+
+        self.left_layout.addWidget(QtWidgets.QLabel())
+        for i in self.left_label:
+            self.left_layout.addWidget(i)
+        self.left_layout.addStretch(1)
+        self.left_layout.addWidget(self.left_label_5)
+        self.left_layout.setSpacing(20)
+
         self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setRowCount(len(self.inds_name)+len(self.mainstore)+1)
         self.tableWidget.setColumnCount(1)
@@ -737,11 +884,13 @@ class indicatorInput(QtWidgets.QMainWindow):
         self.browser.clicked.connect(self.popFileDialog)
         self.file_input = QtWidgets.QLineEdit()
         self.file_input.setText(self.path)
+        self.lbl = QtWidgets.QLabel('请选择输出指标的保存位置')
 
         self.bottom_buttun1 = QtWidgets.QPushButton('继续')
         self.bottom_buttun2 = QtWidgets.QPushButton('退出')
 
-        self.bottom_layout.addWidget(self.tableWidget,          0,    0,          5,      blank+3)
+        self.bottom_layout.addWidget(self.tableWidget,          0,    0,          4,      blank+3)
+        self.bottom_layout.addWidget(self.lbl,                  4,    0,          1,      1)
         self.bottom_layout.addWidget(self.file_input,           5,    0,          1,      blank+2)
         self.bottom_layout.addWidget(self.browser,              5,    blank+2,    1,        1)
         self.bottom_layout.addWidget(QtWidgets.QLabel(''),      6,    0,          1,      blank+1)
@@ -803,10 +952,10 @@ if __name__ == '__main__':
 '''
     #pltwindow = pltWindow('a','bi')
     #datechooser = dateChooser(['2018-12-01','2018-12-02'])
-    '''df = pd.DataFrame([[1904,np.nan,1408],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506]], columns = ['a','b', 'c'], index = ['2018-12-01','2018-12-02','2018-12-03','2018-12-04','2018-12-05','2018-12-06'] )
+    df = pd.DataFrame([[1904,np.nan,1408],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506],[1579, 646, 1506]], columns = ['a','b', 'c'], index = ['2018-12-01','2018-12-02','2018-12-03','2018-12-04','2018-12-05','2018-12-06'] )
     print(df)
     inputchecker = inputChecker(df,df)
     print('stop')
-'''
-    indicatorinput = indicatorInput(['fdsa','fda'])
-    print(indicatorinput.area_mainstore)
+
+    '''indicatorinput = indicatorInput(['fdsa','fda'])
+    print(indicatorinput.area_mainstore)'''

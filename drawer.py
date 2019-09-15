@@ -110,7 +110,7 @@ class heatDrawer():
         ax.add_collection(p)
         ax.set_aspect(1)
         figure.colorbar(p, ax=ax, orientation='horizontal')
-        print('完成:热力绘制')
+        print('完成:热力绘制，正在保存……')
 
         # 展示
         plt.plot()
