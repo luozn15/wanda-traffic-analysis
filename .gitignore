@@ -1,3 +1,8 @@
 *.pyc
-main.exe
-main.spec
+*.exe
+*.spec
+lisp
+*.jpg
+*.ipynb
+*.csv
+*.json
