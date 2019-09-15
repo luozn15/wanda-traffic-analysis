@@ -1,8 +1,9 @@
 *.pyc
 *.exe
 *.spec
-lisp/
+/lisp/
 *.jpg
 *.ipynb
 *.csv
 *.json
+
