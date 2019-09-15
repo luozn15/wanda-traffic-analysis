@@ -14,14 +14,14 @@ def connect_name_boundary(dxfprocessor_2, xlsxprocessor):
     store_name= []
     for i in list(csv['id']):
         try:
-            print(dict_store_id_name[i[0]])
+            #print(dict_store_id_name[i[0]])
             store_name.append(dict_store_id_name[i[0]])
         except:
-            print(i[0])
+            #print(i[0])
             store_name.append(i[0])
     df_name_boundary = csv.copy()
     df_name_boundary['name'] = store_name
-    print('connect_name_boundary')
+    print('util.connect_name_boundary')
     return df_name_boundary
 
 def connect_store_traffic(df_name_boundary,xlsxprocessor):
@@ -37,7 +37,7 @@ def connect_store_traffic(df_name_boundary,xlsxprocessor):
                 traffic_store.append(0)
         
         traffic[traffic_store_day.index[i]]=traffic_store
-    print('connect_store_traffic')
+    print('util.connect_store_traffic')
     return traffic
 
 def get_center(boundary):

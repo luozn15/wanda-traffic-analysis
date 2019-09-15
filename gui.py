@@ -199,8 +199,7 @@ class fileChooser(QtWidgets.QMainWindow):
         filename = QtWidgets.QFileDialog.getOpenFileNames(self, self.status_list[self.status_id], name_inline, self.file_type[self.status_id])[0]
         #print(filename)
         self.name_file[self.status_id] = filename[0]# if self.status_id < 2 and len(filename)==1 else filename
-        print(self.name_file[self.status_id])
-
+        #print(self.name_file[self.status_id])
         self.right_file_input.setText(' , '.join(filename))
     
     def confirm(self):
@@ -211,7 +210,7 @@ class fileChooser(QtWidgets.QMainWindow):
         else : 
             #self.date = self.right_date_input.text()
             self.close()
-        print('confirm')
+        print('confirmed')
         
     def flash(self):
         #left

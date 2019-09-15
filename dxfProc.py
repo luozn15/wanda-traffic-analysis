@@ -13,7 +13,7 @@ class dxfProcessor():
     xa, xi ,ya, yi =0, 0, 0, 0
 
     def __init__(self,dxf_path):
-        print('dxfProcessor inited:')
+        print('***dxfProcessor inited:')
         self.dxf = dxfgrabber.readfile(dxf_path)
         self.dxf_path = dxf_path
         self.entities = [e for e in self.dxf.entities if (e.layer != 'ID' and e.layer !='Bounds')]
@@ -23,7 +23,7 @@ class dxfProcessor():
         self.lwpline = self.get_lwpline(self.entities)
 
         self.xa, self.xi, self.ya, self.yi = self.set_boundary(self.line)
-        print('dxfProcessor finished:')
+        print('***dxfProcessor finished:')
 
 
     def get_line(self,entities):
@@ -85,7 +85,6 @@ class dxfProcessor():
         xi=min(x)
         ya=max(y)
         yi=min(y)
-        #print(xa,xi,ya,yi)
         return (xa,xi,ya,yi)
 
 class dxfProcessor_2():
