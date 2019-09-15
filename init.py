@@ -1,4 +1,4 @@
-import xlsxProc, dxfProc, csvProc
+import xlsxProc, dxfProc
 import gui
 import time
 from multiprocessing import Pool

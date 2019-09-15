@@ -26,7 +26,7 @@ if __name__ =='__main__':
     dxf_processor_2 = initializer.dxf_processor_2
 
     print('GUI_inputchecker start')
-    inputchecker = gui.inputChecker(xlsx_processor.traffic_day, xlsx_processor.traffic_hour) #,csv_processor)
+    inputchecker = gui.inputChecker(xlsx_processor.traffic_day, xlsx_processor.traffic_hour) 
     print('GUI_inputchecker stop')
 
     print('GUI_datechooser start')
@@ -36,18 +36,14 @@ if __name__ =='__main__':
 
     #输入指标
     print('GUI_indicatorinput start')
-    indicatorinput = gui.indicatorInput()
+    indicatorinput = gui.indicatorInput(xlsx_processor.mainstore)
     print('GUI_indicatorinput stop')
 
-    indicators=indicators.Indicators(xlsx_processor, indicatorinput.inds, duration)
+    indicators=indicators.Indicators(xlsx_processor, indicatorinput.inds, indicatorinput.area_mainstore, duration)
     indicators.write(indicatorinput.path)
-<<<<<<< Updated upstream
-
-=======
     os.startfile(indicatorinput.path)
     img_path = '/'.join(indicatorinput.path.split('/')[:-1])
     #print(img_path)
->>>>>>> Stashed changes
     '''for date in datechooser.dates_chosen:
         print('main draw'+date)
         draw(xlsx_processor,dxf_processor,dxf_processor_2,date)'''
