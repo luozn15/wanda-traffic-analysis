@@ -10,7 +10,7 @@ class xlsxProcessor():
     dict_store_id_name ={}
 
     def __init__(self,xlsx):
-        print('xlsxProcessor inited:')
+        print('***xlsxProcessor inited:')
         self.xlsx = xlsx
         traffic_pathway_day = self.read_traffic_pathway_day()
         traffic_store_day, self.dict_store_name_id, self.dict_store_id_name = self.read_traffic_store_day()
@@ -18,10 +18,14 @@ class xlsxProcessor():
 
         self.traffic_day = pd.concat([traffic_pathway_day,traffic_store_day,traffic_entry_parking_day], axis=1)
         self.traffic_hour = self.read_traffic_hour()
-        #print(self.traffic_day.head(5),self.traffic_hour.head(5))
 
         self.dates = [str(ts.date()) for ts in list(self.traffic_day.index)]
+<<<<<<< Updated upstream
         print('xlsxProcessor finished:')
+=======
+        self.mainstore = self.get_mainstore()
+        print('***xlsxProcessor finished:')
+>>>>>>> Stashed changes
 
     def read_traffic_pathway_day(self):
         traffic_pathway_day = pd.read_excel(self.xlsx,'出入口及通道日客流数')

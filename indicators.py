@@ -32,8 +32,10 @@ class Indicators():
 
     # 日均客流, 平日日均客流，周末日均客流
     def traffic_total_per_day(self):
-        traffic_plaza_day = self.traffic_day['广场级']
-        traffic_plaza_day['weekday']=[True if i.weekday()<4 else False for i in traffic_plaza_day.index]
+        traffic_plaza_day = self.traffic_day.copy(deep = True)
+        traffic_plaza_day = traffic_plaza_day['广场级']
+        temp = [True if i.weekday()<4 else False for i in traffic_plaza_day.index]
+        traffic_plaza_day['weekday'] = temp
         temp = traffic_plaza_day.fillna(0).groupby(['weekday']).mean().sum(axis=1)
         return (traffic_plaza_day.sum(axis = 1).mean(),temp[True],temp[False])
 
@@ -57,11 +59,12 @@ class Indicators():
 
     # 日均车流, 平日日均车流，周末日均车流
     def traffic_car_per_day(self):
-        traffic_park_day = self.traffic_day['停车场级']
+        traffic_park_day = self.traffic_day.copy(deep = True)
+        traffic_park_day = traffic_park_day['停车场级']
         traffic_park_day = traffic_park_day.fillna(0)
         copy = traffic_park_day.copy(deep = True)
-        traffic_park_day['weekday']=[True if i.weekday()<4 else False for i in traffic_park_day.index]
-        #print(traffic_park_day)
+        temp = [True if i.weekday()<4 else False for i in traffic_park_day.index]
+        traffic_park_day['weekday'] = temp
         temp = traffic_park_day.groupby(['weekday']).mean().sum(axis=1)
         return (copy.sum(axis = 1).mean(), temp[True], temp[False])
     

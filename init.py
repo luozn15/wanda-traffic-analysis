@@ -43,7 +43,6 @@ class Initializer():
     def process(self):
         time.sleep(2)
         print('init start')
-        #print(self.name_xlsx,self.name_dxf, self.name_csv)
         time_start=time.time()
         
         '''self.xlsx_processor = xlsxProc.xlsxProcessor(self.name_xlsx)
@@ -60,9 +59,8 @@ class Initializer():
         pool.join()
 
         time_end=time.time()
-        print('time cost',time_end-time_start,'s')
+        print('init stop with time_cost:',time_end-time_start,'s')
         
-        print('init stop')
 
 if __name__ =='__main__':
     print('GUI start')

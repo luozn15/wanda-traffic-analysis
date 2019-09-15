@@ -5,16 +5,17 @@ import init
 import util
 import drawer
 import indicators
+import multiprocessing
 
-def draw(xlsx_processor,dxf_processor,dxf_processor_2,date):
-    current_path='/'.join(sys.path[0].split('\\'))
-    heatdrawer = drawer.heatDrawer(current_path)
+def draw(xlsx_processor,dxf_processor,dxf_processor_2,date,path):
+    heatdrawer = drawer.heatDrawer(path)
     heatdrawer.set_data(xlsx_processor,dxf_processor,dxf_processor_2,date)
     output=heatdrawer.draw()
     os.startfile(output)
 
 if __name__ =='__main__':
 
+    multiprocessing.freeze_support()
     print('GUI_filechooser start')
     filechooser = gui.fileChooser()
     print('GUI_filechooser stop')
@@ -40,10 +41,16 @@ if __name__ =='__main__':
 
     indicators=indicators.Indicators(xlsx_processor, indicatorinput.inds, duration)
     indicators.write(indicatorinput.path)
+<<<<<<< Updated upstream
 
+=======
+    os.startfile(indicatorinput.path)
+    img_path = '/'.join(indicatorinput.path.split('/')[:-1])
+    #print(img_path)
+>>>>>>> Stashed changes
     '''for date in datechooser.dates_chosen:
         print('main draw'+date)
         draw(xlsx_processor,dxf_processor,dxf_processor_2,date)'''
     
-    draw(xlsx_processor,dxf_processor,dxf_processor_2,duration)
+    draw(xlsx_processor,dxf_processor,dxf_processor_2,duration,img_path)
 
