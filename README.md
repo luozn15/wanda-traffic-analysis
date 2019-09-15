@@ -35,7 +35,7 @@ pip install pyqt5
 ```
 
 ### 开发者
-@luozn15 罗子牛
+@luozn15 罗子牛  
 @datatraveler-01 熊鑫昌
 
 <img src="/logo-01.png" width = "50" height = "50" div align=right></img>
