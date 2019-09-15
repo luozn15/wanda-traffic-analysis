@@ -5,7 +5,7 @@
 计算商场在时段内的技术指标，绘制商铺的热力图
 ### 输入
 - **客流数据.xlsx**，格式如 [模板.xlsx](https://github.com/luozn15/wanda-traffic/raw/master/模板.xlsx) ，含四个sheet：<p>      ---出入口及通道日客流数</p><p>      ---店铺日客流量</p><p>      ---出入口及通道日客流量</p><p>      ---分时段客流数</p> 
-- **商场平面.dxf**，DXF文件由DWG文件通过AutoCAD导出，版本不限，原始DWG文件包含两个清理过的独立图层：<p>      ---ID，包含店铺序号的文本，位置靠近在店铺轮廓中心</p><p>      ---Bounds，包含店铺轮廓，全为Polyline，弧线也用polyline拟合</p>
+- **商场平面.dxf**，DXF文件由原DWG文件通过AutoCAD导出，参考 [商场平面.dxf](https://cloud.tsinghua.edu.cn/f/abcf3f7e56a9415197de/?dl=1) ，版本不限，原始DWG文件 **必须** 包含两个清理过的独立图层：<p>      ---ID，包含店铺序号的文本，位置靠近在店铺轮廓中心</p><p>      ---Bounds，包含店铺轮廓，全为Polyline，弧线也用polyline拟合</p>
 - 部分需要输入的指标，包括：<p>---商场总建筑面积</p><p>---停车位数</p><p>---各主力店面积</p>
 ### 输出
 - *inds.csv* 文件，包含各种计算获得的技术指标
