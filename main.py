@@ -42,7 +42,7 @@ if __name__ =='__main__':
     indicators=indicators.Indicators(xlsx_processor, indicatorinput.inds, indicatorinput.area_mainstore, duration)
     indicators.write(indicatorinput.path)
     os.startfile(indicatorinput.path)
-    img_path = '/'.join(indicatorinput.path.split('/')[:-1])
+    img_path = os.path.split(indicatorinput.path)[0]
     #print(img_path)
     '''for date in datechooser.dates_chosen:
         print('main draw'+date)

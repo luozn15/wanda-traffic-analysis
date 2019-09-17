@@ -13,7 +13,7 @@ class dxfProcessor():
     xa, xi ,ya, yi =0, 0, 0, 0
 
     def __init__(self,dxf_path):
-        print('***dxfProcessor inited:')
+        print('***dxfProcessor init……')
         self.dxf = dxfgrabber.readfile(dxf_path)
         self.dxf_path = dxf_path
         self.entities = [e for e in self.dxf.entities if (e.layer != 'ID' and e.layer !='Bounds')]
@@ -23,7 +23,7 @@ class dxfProcessor():
         self.lwpline = self.get_lwpline(self.entities)
 
         self.xa, self.xi, self.ya, self.yi = self.set_boundary(self.line)
-        print('***dxfProcessor finished:')
+        print('***dxfProcessor finished')
 
 
     def get_line(self,entities):
@@ -102,6 +102,7 @@ class dxfProcessor_2():
     bounds = []
 
     def __init__(self, dxf_path):
+        print('***dxfProcessor_2 init……')
         self.dxf_path = dxf_path #'../客流点位图-F.dxf'
         dxf = dxfgrabber.readfile(self.dxf_path)
         ids = [e for e in dxf.entities if e.layer == 'ID' and (e.dxftype == 'TEXT' or e.dxftype == 'MTEXT')]
@@ -111,6 +112,7 @@ class dxfProcessor_2():
         self.ids_center = np.array([self.get_mtext_center(e,dxf.styles.get(e.style).width) if e.dxftype == 'MTEXT' else self.get_text_center(e) for e in ids])
         self.bounds_center = np.array([self.get_centerpoint(bound) for bound in bounds])
         self.ids_text = [self.get_text(e) for e in ids]
+        print('***dxfProcessor_2 finished')
 
 
     def get_mtext_center(self, e, stylewidth):

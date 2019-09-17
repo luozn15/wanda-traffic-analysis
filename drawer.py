@@ -7,6 +7,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Arc,Polygon
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
+import os
 plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
 plt.rcParams['axes.unicode_minus']=False #用来正常显示负号
 
@@ -67,20 +68,20 @@ class heatDrawer():
 
         for i in range(len(line_xs)):
             ax.add_line(Line2D(line_xs[i], line_ys[i], linewidth=1, color='black'))
-        print('底图 1/4')
+        print('底图 1/4……')
         for i in arc:
             ax.add_patch(Arc(i[0], i[1], i[1], theta1= i[2], theta2=i[3]))
-        print('底图 2/4')
+        print('底图 2/4……')
         for i in ellipse:
             ax.add_patch(Arc(i[0], i[1], i[2],angle = i[3], theta1= i[4], theta2=i[5]))
-        print('底图 3/4')  
+        print('底图 3/4……')  
         lwpl_xs = [0]*len(lwpline)
         lwpl_ys = [0]*len(lwpline)
         for i in range(len(lwpline)):
             (lwpl_xs[i], lwpl_ys[i]) = zip(*lwpline[i])
         for i in range(len(lwpl_xs)):
             ax.add_line(Line2D(lwpl_xs[i], lwpl_ys[i], linewidth=1, color='black'))
-        print('底图 4/4')
+        print('底图 4/4……')
         print('完成:底图绘制， 开始填充热力……')
 
         #热度填充
@@ -113,11 +114,12 @@ class heatDrawer():
 
         # 展示
         plt.plot()
-        plt.savefig(self.path + '/heat'+str(self.duration[0]) + '-' + str(self.duration[-1]) +'.jpg',dpi = 100)
+        fig_path  = os.path.join(self.path,'heat_'+str(self.duration[0]) + '_' + str(self.duration[-1]) +'.jpg')
+        plt.savefig(fig_path,dpi = 100)
         
         #plt.show()
-        print('保存为 '+self.path + '/heat'+str(self.duration[0]) + '-' + str(self.duration[-1])+'.jpg')
-        return self.path + '/heat'+str(self.duration[0]) + '-' + str(self.duration[-1])+'.jpg'
+        print('保存为 '+fig_path)
+        return fig_path
 
 class inputChecker():
 

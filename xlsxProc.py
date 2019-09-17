@@ -10,7 +10,7 @@ class xlsxProcessor():
     dict_store_id_name ={}
 
     def __init__(self,xlsx):
-        print('***xlsxProcessor inited:')
+        print('***xlsxProcessor init……')
         self.xlsx = xlsx
         traffic_pathway_day = self.read_traffic_pathway_day()
         traffic_store_day, self.dict_store_name_id, self.dict_store_id_name = self.read_traffic_store_day()
@@ -21,7 +21,7 @@ class xlsxProcessor():
 
         self.dates = [str(ts.date()) for ts in list(self.traffic_day.index)]
         self.mainstore = self.get_mainstore()
-        print('***xlsxProcessor finished:')
+        print('***xlsxProcessor finished')
 
     def read_traffic_pathway_day(self):
         traffic_pathway_day = pd.read_excel(self.xlsx,'出入口及通道日客流数')

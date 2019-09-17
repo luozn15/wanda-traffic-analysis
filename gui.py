@@ -3,6 +3,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 import drawer
 import sys
+import os
 from datetime import datetime
 #import sip
 
@@ -10,7 +11,8 @@ import pandas as pd
 import numpy as np
 
 class fileChooser(QtWidgets.QMainWindow):
-    name_file = ['/'.join(sys.path[0].split('\\')[:-1]), '/'.join(sys.path[0].split('\\')[:-1]),'/'.join(sys.path[0].split('\\')[:-1])]#xlsx,dxf,csv
+    cwd = os.getcwd()
+    name_file = [cwd] * 2#xlsx,dxf,csv
     date = ''
     file_type = ['Excel File (*.xlsx)','DXF File(*.dxf)']#,'CSV File (*.csv)']
     status_list = ["选择Excel文件","选择DXF文件",'空值检查', '选择时间段', '输入指标']
@@ -738,7 +740,7 @@ class indicatorInput(QtWidgets.QMainWindow):
     path = './'
 
     def __init__(self,mainstore):
-        self.path = sys.path[0]+'/inds.csv'
+        self.path =os.path.join(os.getcwd(),'inds.csv')
         self.mainstore = mainstore
         print(self.path)
         
