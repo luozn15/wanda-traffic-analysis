@@ -1,7 +1,9 @@
 # Wanda 客流小程序
 <img src="https://cloud.tsinghua.edu.cn/thumbnail/599aea4603294fbd8a8d/1024/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20190917214752.png" width = "500"></img>
 
-本程序使用 *python3.7* 开发，打包为可执行文件格式，双击运行
+本程序使用 *python3.7* 开发，使用
+[pyinstaller](http://www.pyinstaller.org/) 
+打包为可执行文件格式，双击运行
 
 ### 功能
 计算商场在时段内的技术指标，绘制商铺的热力图
