@@ -15,7 +15,7 @@
 
 ### 输出
 - *inds.csv* 文件，包含各种计算获得的技术指标
-- *heatxxxx-xx-xxtoxxxx-xx-xx.jpg* 文件，所选时段内的商铺热力图
+- *heat_xxxx-xx-xx_xxxx-xx-xx.jpg* 文件，所选时段内的商铺热力图
 ### 使用流程
 1. **双击** 客流小程序.exe
 2. **选择** 客流数据.xlsx，确认
