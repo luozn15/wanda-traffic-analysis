@@ -37,9 +37,18 @@ class Indicators():
         traffic_plaza_day = self.traffic_day.copy(deep = True)
         traffic_plaza_day = traffic_plaza_day['广场级']
         temp = [True if i.weekday()<4 else False for i in traffic_plaza_day.index]
+        copy = traffic_plaza_day.copy(deep = True)
         traffic_plaza_day['weekday'] = temp
         temp = traffic_plaza_day.fillna(0).groupby(['weekday']).mean().sum(axis=1)
-        return (traffic_plaza_day.sum(axis = 1).mean(),temp[True],temp[False])
+        try:
+            weekday = temp[True]
+        except:
+            weekday = 0
+        try:
+            weekend = temp[False]
+        except:
+            weekend = 0
+        return (copy.sum(axis = 1).mean(),weekday,weekend)
 
     '''def traffic_total_day(self):
         return self.traffic_day['广场级'].sum(axis = 1).mean()
@@ -68,7 +77,15 @@ class Indicators():
         temp = [True if i.weekday()<4 else False for i in traffic_park_day.index]
         traffic_park_day['weekday'] = temp
         temp = traffic_park_day.groupby(['weekday']).mean().sum(axis=1)
-        return (copy.sum(axis = 1).mean(), temp[True], temp[False])
+        try:
+            weekday = temp[True]
+        except:
+            weekday = 0
+        try:
+            weekend = temp[False]
+        except:
+            weekend = 0
+        return (copy.sum(axis = 1).mean(), weekday, weekend)
     
     # 车场使用频率
     def frequency_parking(self):
@@ -164,5 +181,5 @@ class Indicators():
 
 if __name__=='__main__':
     xlsxprocessor = xlsxProc.xlsxProcessor('C:/Users/LuoZN/Desktop/客流数据/【客流+车场数据】0813.xlsx')
-    indicators=Indicators(xlsxprocessor,['5000','300'],[1,1,1,1,1,1,1,1,1,1,1,1,1,1],('2018-12-01','2018-12-07'))
+    indicators=Indicators(xlsxprocessor,['5000','300'],[1,1,1,1,1,1,1,1,1,1,1,1,1,1],('2019-03-01','2019-03-03'))
     indicators.write('./test1.csv')
