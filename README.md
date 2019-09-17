@@ -23,7 +23,7 @@
 10. 店铺热力图绘制完成自动打开jpg文件
 ### 下载
 下载地址  
-- Windows版 [客流小程序](https://cloud.tsinghua.edu.cn/f/adfddf0ce35a41c1a2a9/?dl=1)，最后更新： 2019-09-15
+- Windows版 [客流小程序](https://cloud.tsinghua.edu.cn/f/6e546f9db46440fb9986/?dl=1)，最后更新： 2019-09-15
 
 - Macintosh版 [客流小程序](https://cloud.tsinghua.edu.cn/f/adfddf0ce35a41c1a2a0/?dl=1)，最后更新： 调试中，即将上线
 
