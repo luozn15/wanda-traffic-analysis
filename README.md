@@ -28,7 +28,7 @@
 9. 指标计算完成自动打开csv文件
 10. 店铺热力图绘制完成自动打开jpg文件
 
-> 操作视频 [![操作视频](https://cloud.tsinghua.edu.cn/thumbnail/f248cd9cce554a758c8f/1024/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190917213606.png)](https://cloud.tsinghua.edu.cn/f/922207dd0dae49a794e7/)
+> [操作视频](https://cloud.tsinghua.edu.cn/f/922207dd0dae49a794e7/) [![操作视频](https://cloud.tsinghua.edu.cn/thumbnail/f248cd9cce554a758c8f/1024/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190917213606.png)](https://cloud.tsinghua.edu.cn/f/922207dd0dae49a794e7/)
 ### 下载
 下载地址  
 - Windows版 [客流小程序](https://cloud.tsinghua.edu.cn/f/6e546f9db46440fb9986/?dl=1)，最后更新： 2019-09-17
