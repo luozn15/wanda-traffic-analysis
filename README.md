@@ -35,7 +35,7 @@
 下载地址  
 - Windows版 [客流小程序](https://cloud.tsinghua.edu.cn/f/6e546f9db46440fb9986/?dl=1)，最后更新： 2019-09-17
 
-- Macintosh版 [客流小程序](https://cloud.tsinghua.edu.cn/f/adfddf0ce35a41c1a2a0/?dl=1)，最后更新： 调试中，即将上线
+- Macintosh版 [客流小程序](https://cloud.tsinghua.edu.cn/f/4dfcae4c3c7548259c38/?dl=1)，最后更新： 2019-09-19
 
 ### 依赖
 执行源码时，Anaconda环境下额外依赖python库 *dxfgrabber*, *pyqt5*
