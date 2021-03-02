@@ -33,9 +33,9 @@
 > [操作视频](https://cloud.tsinghua.edu.cn/f/d29a1d41dcec4eeb9990/) [![操作视频](https://cloud.tsinghua.edu.cn/seafhttp/files/9ce86efe-c1b2-4971-8646-77cb063f8a8a/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190917213606.png)](https://cloud.tsinghua.edu.cn/f/d29a1d41dcec4eeb9990/)
 ### 下载
 下载地址  
-- Windows版 [客流小程序](https://cloud.tsinghua.edu.cn/f/f4a83e589178415caa67/)，最后更新： 2019-09-17
+- Windows： [客流小程序](https://cloud.tsinghua.edu.cn/f/f4a83e589178415caa67/)，最后更新： 2019-09-17
 
-- Macintosh版 [客流小程序](https://cloud.tsinghua.edu.cn/f/47ba1d3c4cf7408ea564/)，最后更新： 2019-09-19
+- MacOS： [客流小程序](https://cloud.tsinghua.edu.cn/f/47ba1d3c4cf7408ea564/)，最后更新： 2019-09-19
 
 ### 依赖
 执行源码时，Anaconda环境下额外依赖python库 *dxfgrabber*, *pyqt5*
